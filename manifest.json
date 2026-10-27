@@ -1,0 +1,9 @@
+{
+  "name": "Hollow Knight: Broken Veil",
+  "short_name": "Broken Veil",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0e0b16",
+  "theme_color": "#0e0b16"
+}
