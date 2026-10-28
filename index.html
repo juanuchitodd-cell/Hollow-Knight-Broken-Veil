@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Hollow Knight: Broken Veil – Menú</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#f4f1ea;--dim:#a9a8ae;--bg2:#05060a;--eye:#06180c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#lrw{position:relative;flex:none;width:1920px;height:1080px}
+#lrw .stage{transform-origin:0 0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.stage{text-rendering:geometricPrecision}   /* el texto escala parejo aunque sea muy chico */   /* marco que deshace la reducción del escenario: juntos dejan el tamaño final igual, pero el escenario se dibuja con pocos píxeles */
+*{box-sizing:border-box;margin:0}
+html{background:#000;color-scheme:dark}   /* la zona segura (muesca / barra superior) queda negra, nunca blanca */
+html,body{overscroll-behavior:none}
+html,body{height:100%;height:100dvh}
+html.ext{padding:0}                        /* Sin bordes: la escena ocupa también la parte de arriba (zona segura) */
+:fullscreen,:-webkit-full-screen{background:#000}
+body{background:var(--bg2);color:var(--ink);font-family:'Cinzel','Trajan Pro',Georgia,serif;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.stage{position:relative;flex:none;width:1920px;height:1080px;transform-origin:50% 50%;container-type:size;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+background:#000}
+.stage::before{content:"";position:absolute;top:0;left:0;right:0;height:150%;background:var(--ibg,url(./assets/background.webp)) center/100% 100% no-repeat;transform-origin:50% 36%;filter:brightness(1.25) saturate(1.1);animation:breath 4.5s ease-in-out infinite alternate}
+@keyframes breath{from{transform:scale(.92);opacity:.5}to{transform:scale(1.1);opacity:1}}
+.p{position:absolute;bottom:calc(-1% - var(--E,0px));border-radius:50%;background:#b8ffb8;box-shadow:0 0 8px 2px rgba(70,255,110,.7);opacity:0;animation:fl 10s linear infinite;z-index:1}
+@keyframes flx{0%{transform:translate(0,0);opacity:0}15%{opacity:var(--o,.9)}70%{opacity:var(--o,.9)}100%{transform:translate(var(--dx,1cqw),calc(var(--ey,0px)*-1));opacity:0}}   /* partículas de la franja de abajo en Sin bordes: nacen fuera de la pantalla y suben hasta el borde del 16:9 */
+@keyframes fl{0%{transform:translate(0,0);opacity:0}12%{opacity:var(--o,.9)}100%{transform:translate(var(--dx,1cqw),calc(var(--r)*-1 - var(--E,0px)));opacity:0}}
+.title{position:relative;z-index:2;text-align:center;margin-top:11.7cqh;filter:drop-shadow(0 0 .73cqw rgba(255,255,255,.55))}
+.title img{display:block;margin-left:auto;margin-right:auto}
+.top{width:15.56cqw}
+.bot{width:33.43cqw;margin-top:0.33cqw}
+.hk{width:27.16cqw;margin-top:0cqw}
+.bv{width:43.32cqw;margin-top:-1.55cqw;position:relative;left:0}
+nav{position:relative;z-index:2;margin-top:3.33cqh;display:flex;flex-direction:column;align-items:center;gap:2.88cqh}
+.item{display:flex;align-items:center;gap:1.2cqw;cursor:pointer;font-size:1.78cqw;line-height:1;letter-spacing:.06em;color:var(--ink);font-weight:500;text-shadow:0 0 1.1cqw rgba(255,255,255,.55);padding:0;user-select:none}
+.item .a{position:relative;width:2.5cqw;aspect-ratio:4/3;margin:-.08cqw 0;display:block;opacity:0}
+.item .a .s{position:absolute;inset:0;background:var(--iarrow,url(./assets/arrow-sprite.png)) 0 0/2400% 100% no-repeat}
+.item .a:last-child .s{transform:scaleX(-1)}
+.item.sel .a{opacity:1}
+.item.sel .a .s{animation:arrowPlay .34s steps(23,end) both}
+@keyframes arrowPlay{from{background-position:0 0}to{background-position:100% 0}}
+.item .a{pointer-events:none;-webkit-user-drag:none}
+.cherry{position:absolute;z-index:2;left:9cqw;bottom:7cqh;display:flex;flex-direction:column;align-items:center;gap:.3cqw;font-family:Arial,sans-serif;color:var(--ink)}
+.cherry img{width:6cqw;height:auto;display:block}
+.cherry i{font-style:normal;font-size:.8cqw;color:var(--dim);letter-spacing:.08em}
+.intro{position:absolute;inset:0;z-index:20;background:#000;display:flex;align-items:center;justify-content:center;animation:introOut 1.8s ease-in-out 18s forwards}
+.intro img{width:23cqw;height:auto;display:block;opacity:0;transform-origin:50% 50%;animation:logoIn 5.8s linear .5s forwards}
+@keyframes logoIn{0%{opacity:0;transform:scale(1);filter:brightness(1.25) drop-shadow(0 0 1.2cqw rgba(255,255,255,.55))}15%{opacity:1;filter:brightness(1.25) drop-shadow(0 0 1.2cqw rgba(255,255,255,.55))}68%{opacity:1;filter:brightness(1.25) drop-shadow(0 0 1.2cqw rgba(255,255,255,.55))}100%{opacity:0;transform:scale(1.22);filter:brightness(1.25) drop-shadow(0 0 1.2cqw rgba(255,255,255,.55))}}
+@keyframes introOut{to{opacity:0}}
+/* pantalla de guardado automático: entra después del logo de Team Cherry (1 s), se queda 9 s para poder leerla, se funde a negro (1,2 s) y recién entonces aparece el menú (la intro negra se desvanece a los 18 s) */
+.save{position:absolute;inset:0;background:var(--isave,url(./assets/save-screen.jpg)) center/cover no-repeat;opacity:0;animation:saveShow 11.2s linear 6.5s forwards}
+@keyframes saveShow{0%{opacity:0;animation-timing-function:ease-in-out}8.93%{opacity:1}89.29%{opacity:1;animation-timing-function:ease-in-out}100%{opacity:0}}
+
+.save .halo{position:absolute;left:50%;top:20.55cqw;width:32cqw;height:32cqw;transform:translate(-50%,-50%);background:var(--ihalo,url(./assets/save-halo.webp)) center/100% 100% no-repeat;pointer-events:none}
+.save .sorn{position:absolute;left:0;top:-3.125cqw;width:100cqw;height:62.5cqw;display:block;overflow:visible}
+.save .sglow{stroke:#fff;stroke-width:.8;stroke-linejoin:round}
+.save .sline{stroke:#fff;stroke-width:1.8;stroke-linejoin:round}
+.save .stxt{position:absolute;left:0;right:0;top:34.35cqw;transform:translateY(-50%);text-align:center;font-family:'Perpetua','Cormorant Garamond','EB Garamond',Georgia,serif;font-size:2.02cqw;line-height:3.07cqw;font-weight:400;color:#f4f1ea;text-shadow:0 0 .6cqw rgba(0,0,0,.55)}
+.save .stxt span{display:block}
+*{-webkit-tap-highlight-color:transparent}
+.stage,.stage *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;outline:none}
+.item{touch-action:manipulation;cursor:default}
+/* efecto al elegir una opción: medido fotograma a fotograma del video a velocidad real (30 fps); todo dura --fx (8 cuadros) */
+.item .tw{position:relative;display:inline-block}
+.item .t{position:relative;display:inline-block}
+.item .g{position:absolute;inset:0;pointer-events:none}
+.item .g::before,.item .g::after{content:"";position:absolute;opacity:0}
+.item .g::before{left:-4.2cqw;right:-4.2cqw;top:-70%;bottom:-70%;background:radial-gradient(ellipse closest-side at center,rgba(255,255,255,1) 0%,rgba(255,255,255,.72) 20%,rgba(255,255,255,.34) 50%,rgba(255,255,255,.1) 80%,rgba(255,255,255,0) 100%)}
+.item .g::after{left:-3.4cqw;right:-3.4cqw;top:25%;bottom:25%;background:radial-gradient(ellipse closest-side at center,rgba(255,255,255,.95) 0%,rgba(255,255,255,.55) 35%,rgba(255,255,255,.25) 70%,rgba(255,255,255,0) 100%)}
+.item .a{z-index:0}
+.item .tw{z-index:1}
+.stage.go nav{pointer-events:none}
+.stage.go .item.sel .t{animation:selFade var(--fx) linear forwards}
+.stage.go .item.sel .g::before{animation:glowOuter var(--fx) linear forwards}
+.stage.go .item.sel .g::after{animation:glowInner var(--fx) linear forwards}
+.stage.go .item.up{animation:upFade var(--fx) linear forwards}
+.stage.go .item.dn,.stage.go .cherry{animation:dnFade var(--fx) linear forwards}
+.stage.go .title{animation:titleFade var(--fx) linear forwards}
+.stage.go .item.sel .a{animation:hideArrow var(--fx) linear forwards}
+.stage.go .item.sel .a .s{animation:arrowPlayRev calc(var(--fx)*.5) steps(23,end) both}
+@keyframes arrowPlayRev{from{background-position:100% 0}to{background-position:0 0}}
+.stage.back .title,.stage.back nav,.stage.back .cherry{animation:menuBack .5s ease-out both}
+@keyframes hideArrow{0%,55%{opacity:1}55.1%,100%{opacity:0}}
+@keyframes menuBack{from{opacity:0}to{opacity:1}}
+@keyframes titleFade{0%{opacity:1}12.5%{opacity:0.64}25%{opacity:0}37.5%{opacity:0}100%{opacity:0}}
+@keyframes upFade{0%{opacity:1}12.5%{opacity:0.67}25%{opacity:0.42}37.5%{opacity:0.1}50%{opacity:0}62.5%{opacity:0}100%{opacity:0}}
+@keyframes dnFade{0%{opacity:1}12.5%{opacity:0.8}25%{opacity:0.63}37.5%{opacity:0.33}50%{opacity:0.14}62.5%{opacity:0.07}75%{opacity:0}87.5%{opacity:0}100%{opacity:0}}
+@keyframes selFade{0%{opacity:1;filter:brightness(1)}8%{opacity:1;filter:brightness(2.1)}18%{opacity:.96;filter:brightness(1.65)}30%{opacity:.78;filter:brightness(1.3)}45%{opacity:.48;filter:brightness(1.1)}62.5%{opacity:.24;filter:brightness(1)}75%{opacity:.08}87.5%,100%{opacity:0}}
+@keyframes glowOuter{0%{opacity:0;transform:scaleY(.08)}15%{opacity:1;transform:scaleY(.35)}35%{opacity:.7;transform:scaleY(.75)}50%{opacity:0;transform:scaleY(1)}100%{opacity:0;transform:scaleY(1)}}
+@keyframes glowInner{0%{opacity:0;transform:scaleY(.12)}12%{opacity:1;transform:scaleY(.4)}30%{opacity:.6;transform:scaleY(.95)}42%{opacity:0;transform:scaleY(1.35)}100%{opacity:0;transform:scaleY(1.35)}}
+.stage.lr img,.stage.lr .item .a .s,.stage.lr .save,.stage.lr .save .halo,.stage.lr::before{image-rendering:pixelated}   /* a resolución baja se ven los píxeles */
+.item .val.fixed{opacity:.7}   /* opción con un solo valor (no se puede cambiar): el valor se ve más apagado */
+/* ---- confirmación de "Salir del juego" ---- */
+#qorn{top:36.6cqh}                                            /* ornamento arriba */
+#qtitle{top:42.5cqh;font-size:1.96cqw;text-shadow:0 0 1.1cqw rgba(255,255,255,.55)}   /* la pregunta, debajo del ornamento y del tamaño de las opciones */
+#qmenu{top:48.9cqh;gap:3.75cqh}                               /* Sí y No, con el mismo espaciado de las demás opciones */
+#qopts .otitle{font-variant-caps:small-caps}
+#bye{position:fixed;inset:0;z-index:99;background:#000;opacity:0;pointer-events:all;transition:opacity .7s ease-in}
+#bye.on{opacity:1}
+.intro::before{content:"";position:absolute;inset:calc(var(--ey,0px)*-1) calc(var(--ex,0px)*-1);background:#000;z-index:-1}   /* en Sin bordes, la pantalla del guardado también tapa en negro las franjas de arriba/abajo y los costados (sin brillo ni partículas) */
+/* ---- pantalla de Opciones (medidas tomadas de la captura de referencia) ---- */
+.opts{position:absolute;inset:0;z-index:2;display:none}
+.opts.show{display:block;animation:optsIn .3s ease-out both}
+@keyframes optsIn{from{opacity:0}to{opacity:1}}
+.otitle{position:absolute;left:0;right:0;top:13cqh;transform:translateY(-50%);text-align:center;font-size:2.68cqw;line-height:1;letter-spacing:.05em;font-weight:500;color:var(--ink);text-shadow:0 0 1.2cqw rgba(255,255,255,.55)}
+.orn{position:absolute;left:50%;top:20.5cqh;width:30cqw;height:auto;transform:translate(-50%,-50%);display:block;--r:0%;filter:drop-shadow(0 0 .7cqw rgba(255,255,255,.45));-webkit-mask-image:linear-gradient(90deg,transparent calc(50% - var(--r) - 6%),#000 calc(50% - var(--r)),#000 calc(50% + var(--r)),transparent calc(50% + var(--r) + 6%));mask-image:linear-gradient(90deg,transparent calc(50% - var(--r) - 6%),#000 calc(50% - var(--r)),#000 calc(50% + var(--r)),transparent calc(50% + var(--r) + 6%))}
+.onav{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+#omenu{top:26.6cqh;gap:3.75cqh}
+#oback{top:85.5cqh}
+.stage.opt .title,.stage.opt #menu,.stage.opt .cherry{visibility:hidden}
+.stage.go .onav{pointer-events:none}
+.stage.go .otitle,.stage.go .orn{animation:titleFade var(--fx) linear forwards}
+.stage.back .otitle,.stage.back .orn,.stage.back .onav{animation:menuBack .5s ease-out both}
+.opts.out{animation:optsOut .27s linear both}
+.opts.show.slow{animation:optsIn .8s ease-out both}
+@keyframes optsOut{from{opacity:1}to{opacity:0}}
+/* ---- Opciones de juego ---- */
+#gmenu{top:26.4cqh;gap:3.5cqh}#greset{top:76.3cqh}#gback{top:85.5cqh}
+#gopts .otitle{font-variant-caps:small-caps}
+.item.row{width:54cqw}.item.row .tw{flex:1;text-align:left}
+.item .val{font-size:1.78cqw;letter-spacing:.06em;text-align:right;text-shadow:0 0 1.1cqw rgba(255,255,255,.55)}
+.stage.wide .item .g::before{left:-5cqw;right:-5cqw}
+.stage.wide .item .g::after{left:-4cqw;right:-4cqw}
+/* ---- Audio ---- */
+#amenu{top:26.4cqh;gap:3.5cqh}#areset{top:76.3cqh}#aback{top:85.5cqh}
+#aopts .otitle{font-variant-caps:small-caps}
+#aopts .item.row{width:53cqw}
+.item .sl{position:relative;flex:none;width:11.4cqw;height:1.875cqw;margin-right:2cqw;touch-action:none;cursor:pointer}
+.item .sl::before{content:"";position:absolute;left:0;right:0;top:50%;height:.22cqw;margin-top:-.11cqw;background:rgba(255,255,255,.28)}
+.item .sl .fl{position:absolute;left:0;top:50%;height:.22cqw;margin-top:-.11cqw;width:calc(var(--v,10)*10%);background:#fff;box-shadow:0 0 .5cqw rgba(255,255,255,.6);pointer-events:none}
+.item .sl::after{content:"";position:absolute;left:-.8cqw;right:-.8cqw;top:-1.6cqw;bottom:-.9cqw}
+.item .sl .mk{position:absolute;left:calc(var(--v,10)*10%);top:50%;margin-top:-2.05cqw;width:.85cqw;height:.85cqw;transform:translateX(-50%);pointer-events:none;filter:drop-shadow(0 0 .3cqw rgba(255,255,255,.7))}
+.item .num{width:2.4cqw;flex:none}
+/* ---- Vídeo (opciones distintas en PC y en móvil) ---- */
+#vmenu{top:27cqh;gap:3.79cqh}#vreset{top:79.8cqh}#vback{top:85.9cqh}
+#vopts .otitle{font-variant-caps:small-caps}
+#vopts .item.row{position:relative}
+#vopts .item.row,#gopts .item.row{width:auto}                      /* la fila se ajusta al contenido: nombre y estado quedan cerca */
+#vopts .item.row .tw,#gopts .item.row .tw{flex:none;width:var(--lw,26cqw)}
+#vmenu .item.row,#gmenu .item.row{align-self:center}              /* todas las filas miden lo mismo y quedan centradas bajo el título */
+.opts .item .t{white-space:nowrap}                                 /* ningún texto de las opciones se parte en dos renglones */
+#vopts .item.row .val,#gopts .item.row .val{flex:none;min-width:var(--vw,13cqw);margin-left:.8cqw;text-align:right}
+/* Vídeo: dos columnas separadas, con las medidas exactas de la captura de referencia: los nombres arrancan todos en la "P" de "Pantalla completa" (borde izquierdo del bloque) y los estados terminan todos en la "s" final de "Sin bordes" (borde derecho del bloque) */
+#vopts .item{}                 /* todas las opciones de Vídeo (con y sin estado) del mismo tamaño */
+#vopts .item.row{width:var(--rw,45.5cqw);min-width:0}
+#vopts .item.row .tw{flex:1;width:auto;min-width:0;text-align:left}
+#vopts .item.row .val{flex:none;min-width:0;margin-left:1.2cqw;text-align:right}
+/* Botón "Aplicar" al lado de Resolución */
+.apply{position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:1.6cqw;padding:.5cqw 1.5cqw;border:.12cqw solid rgba(244,241,234,.55);border-radius:.4cqw;background:rgba(0,0,0,.3);font-size:1.45cqw;line-height:1;letter-spacing:.06em;white-space:nowrap;cursor:pointer;opacity:.45;text-shadow:0 0 1cqw rgba(255,255,255,.55);transition:opacity .15s,box-shadow .15s,background .15s}
+.apply.ready{opacity:1;box-shadow:0 0 1.1cqw rgba(255,255,255,.45)}
+.apply:hover{background:rgba(255,255,255,.16)}
+/* Botón "Aplicar" como en el port: aparece solo en la fila seleccionada (Resolución o Pantalla completa) */
+.apply{display:none;opacity:.9;font-family:'Perpetua','Cormorant Garamond','EB Garamond',Georgia,serif;font-size:1.5cqw;letter-spacing:.02em;left:100%;margin-left:1.7cqw;box-sizing:border-box;width:6.51cqw;height:2.5cqw;padding:0;transition:none;border:.1cqw solid rgba(244,241,234,.95);border-radius:.3cqw;background:rgba(0,0,0,.35);text-shadow:none}
+.item.sel .apply.ready{display:flex;align-items:center;justify-content:center}   /* solo aparece cuando hay un cambio pendiente, de golpe (sin fundido) */
+.apply.ready{opacity:1;box-shadow:0 0 1.1cqw rgba(255,255,255,.5)}
+html.bars,body.bars,html.ext,body.ext{background:#000}   /* barras negras alrededor del 16:9 en pantalla completa */
+/* Sin bordes: el fondo y las partículas salen del marco 16:9 hasta el límite de la pantalla */
+.stage.ext{overflow:visible}
+.stage.ext::before{left:calc(var(--ex,0px)*-1);right:calc(var(--ex,0px)*-1);top:calc(var(--ey,0px)*-1);height:calc(150% + 2*var(--ey,0px));background-size:calc(100% - 2*var(--ex,0px)) calc(100% - 2*var(--ey,0px));background-position:var(--ex,0px) var(--ey,0px);transform-origin:50% calc(var(--ey,0px) + .36*(100% - 2*var(--ey,0px)))}   /* el brillo queda exactamente donde estaba; solo se agranda el área negra alrededor */
+.item .desc{position:absolute;left:3.7cqw;top:100%;margin-top:.8cqh;white-space:nowrap;font-family:'Perpetua','Cormorant Garamond','EB Garamond',Georgia,serif;font-size:1.25cqw;line-height:1;letter-spacing:.01em;font-weight:400;opacity:0;pointer-events:none;transition:opacity .22s ease-out}
+.item.sel .desc{opacity:1}
+.stage.rst .item.sel .t{animation:rstTxt var(--fx) linear}
+.stage.rst .item.sel .g::before{animation:glowOuter var(--fx) linear forwards}
+.stage.rst .item.sel .g::after{animation:glowInner var(--fx) linear forwards}
+@keyframes rstTxt{0%{filter:brightness(1)}8%{filter:brightness(2.1)}18%{filter:brightness(1.65)}30%{filter:brightness(1.3)}45%{filter:brightness(1.1)}62.5%,100%{filter:brightness(1)}}
+</style>
+  <link rel="manifest" href="./manifest.json">
+</head>
+<body>
+<div id="lrw"><div class="stage" id="stage">
+  <div class="title">
+    <img class="top" src="./assets/title-top.png" alt="">
+    <img class="hk" src="./assets/title-hollow-knight.png" alt="Hollow Knight">
+    <img class="bv" src="./assets/title-broken-veil.png" alt="Broken Veil">
+    <img class="bot" src="./assets/title-bottom.png" alt="">
+  </div>
+  <nav id="menu"></nav>
+  <div class="cherry">
+    <img src="./assets/team-cherry-footer.png" alt="team cherry">
+    <i>v0.0.1</i>
+  </div>
+  <div class="opts" id="opts">
+    <div class="otitle">Opciones</div>
+    <img class="orn" id="orn" src="./assets/ornament.png" alt="">
+    <div class="onav" id="omenu"></div>
+    <div class="onav" id="oback"></div>
+  </div>
+  <div class="opts" id="gopts">
+    <div class="otitle" id="gtitle"></div>
+    <img class="orn" id="gorn" alt="">
+    <div class="onav" id="gmenu"></div>
+    <div class="onav" id="greset"></div>
+    <div class="onav" id="gback"></div>
+  </div>
+  <div class="opts" id="aopts">
+    <div class="otitle" id="atitle"></div>
+    <img class="orn" id="aorn" alt="">
+    <div class="onav" id="amenu"></div>
+    <div class="onav" id="areset"></div>
+    <div class="onav" id="aback"></div>
+  </div>
+  <div class="opts" id="qopts">
+    <div class="otitle" id="qtitle"></div>
+    <img class="orn" id="qorn" alt="">
+    <div class="onav" id="qmenu"></div>
+  </div>
+  <div class="opts" id="vopts">
+    <div class="otitle" id="vtitle"></div>
+    <img class="orn" id="vorn" alt="">
+    <div class="onav" id="vmenu"></div>
+    <div class="onav" id="vreset"></div>
+    <div class="onav" id="vback"></div>
+  </div>
+  <div class="intro" id="intro"><div class="save"><div class="halo"></div><svg class="sorn" viewBox="0 0 1586 992" preserveAspectRatio="none" aria-hidden="true"><g class="sglow" transform="translate(190.32 104) scale(.76)"><path d="M793.06 472.39 792.94 472.39 792.81 472.24 792.56 471.31 792.35 467.81 791.87 464.69 791.53 461.56 791.16 460.56 790.18 459.19 789.97 458.56 790.00 458.19 790.16 457.81 791.36 456.19 791.86 455.06 792.01 453.81 791.77 451.94 791.88 451.44 792.27 450.56 792.30 449.94 791.35 446.31 790.92 443.56 790.56 442.19 789.58 439.19 787.94 435.50 786.61 433.06 784.69 430.34 783.00 428.31 780.94 426.21 778.94 424.58 777.19 423.46 772.69 421.27 770.69 420.06 769.19 418.90 766.96 416.81 765.88 415.56 765.04 414.31 762.99 410.56 762.15 408.44 761.75 406.19 761.46 402.94 761.57 397.31 761.72 395.69 762.35 392.06 762.67 390.81 766.56 380.94 767.08 379.19 767.06 378.59 766.69 378.74 766.19 379.20 762.81 383.41 758.81 387.72 755.31 391.26 753.81 392.98 752.44 394.77 750.44 397.75 749.15 399.94 748.31 401.67 747.21 404.44 747.07 404.94 747.11 405.31 747.31 405.59 747.72 405.81 750.06 406.09 751.19 406.33 752.94 406.91 754.56 407.66 757.27 409.31 759.44 410.96 760.88 412.19 762.98 414.44 766.22 418.69 767.67 420.81 772.26 428.19 773.31 429.69 774.43 431.06 776.06 432.74 778.20 434.56 783.34 438.06 785.59 439.69 786.94 440.81 787.95 441.81 788.87 442.94 789.41 443.81 789.49 444.06 789.44 444.29 789.19 444.30 788.94 444.18 786.69 442.46 783.65 440.44 779.31 437.91 777.82 436.94 775.39 435.06 774.06 433.85 772.11 431.81 770.78 430.19 767.20 424.94 764.81 421.08 762.81 418.50 759.66 415.06 755.69 411.37 754.19 410.32 752.81 409.58 751.81 409.16 749.94 408.56 748.44 408.21 746.94 408.09 746.19 408.14 744.69 408.47 744.31 408.35 744.06 408.06 743.94 407.56 744.02 406.81 744.69 404.19 745.10 401.94 745.81 399.45 746.39 396.19 747.40 392.94 748.73 389.19 749.82 385.06 749.97 383.81 749.77 382.44 749.06 380.83 748.65 378.94 747.48 374.94 746.54 369.69 745.74 366.19 745.25 365.31 743.60 364.19 743.38 363.94 743.27 363.56 743.33 363.31 743.56 363.03 744.56 362.43 745.01 362.06 745.44 361.30 745.62 359.44 745.62 352.31 745.75 351.06 746.56 348.19 747.24 344.44 749.94 336.44 750.90 334.56 753.99 329.94 755.19 328.31 756.94 326.29 760.56 322.45 762.69 320.40 764.75 318.69 766.03 317.06 767.56 316.05 771.81 312.58 773.76 310.81 781.44 302.69 783.45 300.31 784.80 298.44 786.57 295.56 787.48 293.81 787.63 293.31 787.60 292.94 787.44 292.80 787.06 292.81 784.19 294.25 780.06 295.77 777.06 296.68 774.31 297.16 772.91 297.56 770.81 298.41 769.19 299.43 767.81 300.72 766.19 302.69 765.49 303.81 764.24 306.31 763.97 307.19 763.86 308.31 764.00 312.44 763.81 312.93 763.69 312.96 763.44 312.83 763.10 312.19 762.72 310.81 762.41 308.69 762.56 306.98 763.16 304.44 763.84 302.94 765.26 300.44 766.33 298.81 772.81 289.91 774.94 286.51 776.38 283.69 777.27 281.19 777.55 279.94 777.69 278.81 777.72 277.44 777.62 276.06 776.96 273.06 777.04 272.81 777.19 272.81 777.44 273.01 777.81 273.62 778.69 275.57 779.05 276.81 779.17 278.19 779.16 280.06 778.85 282.94 778.28 284.94 777.15 287.44 775.35 290.31 772.85 293.81 772.63 294.31 772.69 294.64 772.94 294.76 773.31 294.72 775.31 294.02 777.69 293.57 780.31 292.94 782.03 292.44 783.93 291.69 785.71 290.69 788.31 288.93 789.22 287.94 789.94 286.67 790.56 284.81 790.94 282.94 791.00 281.06 790.75 279.19 790.02 277.06 789.30 275.69 788.19 274.34 786.55 273.06 786.30 272.69 786.26 272.31 786.61 271.69 788.19 270.44 789.14 269.31 789.86 267.94 790.53 265.81 791.51 260.31 791.88 255.19 792.25 245.94 792.51 243.94 792.69 243.31 792.94 242.89 793.19 243.03 793.31 243.31 793.67 245.06 793.86 247.94 794.12 255.19 794.45 259.94 794.63 261.31 795.47 265.81 796.14 267.94 796.86 269.31 797.81 270.44 799.39 271.69 799.74 272.31 799.70 272.69 799.45 273.06 797.81 274.34 796.70 275.69 795.98 277.06 795.25 279.19 795.00 281.06 795.06 282.94 795.44 284.81 796.06 286.67 796.78 287.94 797.69 288.93 800.29 290.69 802.07 291.69 803.97 292.44 805.69 292.94 808.31 293.57 810.69 294.02 812.69 294.72 813.06 294.76 813.31 294.64 813.37 294.31 813.15 293.81 810.65 290.31 808.85 287.44 807.72 284.94 807.15 282.94 806.84 280.06 806.83 278.19 806.95 276.81 807.31 275.57 808.19 273.62 808.56 273.01 808.81 272.81 808.96 272.81 809.04 273.06 808.38 276.06 808.28 277.44 808.31 278.81 808.45 279.94 808.73 281.19 809.62 283.69 811.06 286.51 813.19 289.91 819.67 298.81 820.74 300.44 822.16 302.94 822.84 304.44 823.44 306.98 823.59 308.69 823.28 310.81 822.90 312.19 822.56 312.83 822.31 312.96 822.19 312.93 822.00 312.44 822.14 308.31 822.03 307.19 821.76 306.31 820.51 303.81 819.81 302.69 818.19 300.72 816.81 299.43 815.19 298.41 813.09 297.56 811.69 297.16 808.94 296.68 805.94 295.77 801.81 294.25 798.94 292.81 798.56 292.80 798.40 292.94 798.37 293.31 798.52 293.81 799.43 295.56 801.20 298.44 802.55 300.31 804.56 302.69 812.24 310.81 814.19 312.58 818.44 316.05 819.97 317.06 821.25 318.69 823.31 320.40 825.44 322.45 829.06 326.29 830.81 328.31 832.01 329.94 835.10 334.56 836.06 336.44 838.76 344.44 839.44 348.19 840.25 351.06 840.38 352.31 840.38 359.44 840.56 361.30 840.99 362.06 841.44 362.43 842.44 363.03 842.67 363.31 842.73 363.56 842.62 363.94 842.40 364.19 840.75 365.31 840.26 366.19 839.46 369.69 838.52 374.94 837.35 378.94 836.94 380.83 836.23 382.44 836.03 383.81 836.18 385.06 837.27 389.19 838.60 392.94 839.61 396.19 840.19 399.45 840.90 401.94 841.31 404.19 841.98 406.81 842.06 407.56 841.94 408.06 841.69 408.35 841.31 408.47 839.81 408.14 839.06 408.09 837.56 408.21 836.06 408.56 834.19 409.16 833.19 409.58 831.81 410.32 830.31 411.37 826.34 415.06 823.19 418.50 821.19 421.08 818.80 424.94 815.22 430.19 813.89 431.81 811.94 433.85 810.61 435.06 808.18 436.94 806.69 437.91 802.35 440.44 799.31 442.46 797.06 444.18 796.81 444.30 796.56 444.29 796.51 444.06 796.59 443.81 797.13 442.94 798.05 441.81 799.06 440.81 800.41 439.69 802.66 438.06 807.80 434.56 809.94 432.74 811.57 431.06 812.69 429.69 813.74 428.19 818.33 420.81 819.78 418.69 823.02 414.44 825.12 412.19 826.56 410.96 828.73 409.31 831.44 407.66 833.06 406.91 834.81 406.33 835.94 406.09 838.28 405.81 838.69 405.59 838.89 405.31 838.93 404.94 838.79 404.44 837.69 401.67 836.85 399.94 835.56 397.75 833.56 394.77 832.19 392.98 830.69 391.26 827.19 387.72 823.19 383.41 819.81 379.20 819.31 378.74 818.94 378.59 818.92 379.19 819.44 380.94 823.33 390.81 823.65 392.06 824.28 395.69 824.43 397.31 824.54 402.94 824.25 406.19 823.85 408.44 823.01 410.56 820.96 414.31 820.12 415.56 819.16 416.69 816.92 418.81 815.44 419.97 813.44 421.20 808.69 423.54 806.92 424.69 804.81 426.43 802.44 428.95 800.41 431.56 799.17 433.44 797.49 436.69 796.32 439.44 795.30 442.69 794.65 446.31 793.70 449.94 793.73 450.56 794.12 451.44 794.23 451.94 793.99 453.81 794.14 455.06 794.64 456.19 795.84 457.81 796.00 458.19 796.03 458.56 795.82 459.19 794.84 460.56 794.44 461.69 794.15 464.56 793.63 467.94 793.45 471.19 793.31 471.91ZM793.06 277.07 793.31 276.96 793.56 276.68 794.32 274.56 794.69 273.99 795.56 273.01 795.76 272.44 795.56 271.86 794.43 270.44 793.56 268.43 793.31 268.11 792.94 267.98 792.69 268.11 792.44 268.43 791.57 270.44 790.44 271.86 790.24 272.44 790.44 273.01 791.31 273.99 791.68 274.56 792.44 276.68 792.69 276.96ZM793.06 442.55 793.38 442.31 793.61 441.81 794.30 438.81 794.99 436.31 799.16 423.31 800.03 420.19 802.64 411.69 803.11 408.81 803.83 405.94 804.22 402.81 804.82 399.56 805.26 394.06 805.37 389.94 805.69 386.06 805.52 382.94 805.17 380.19 805.22 377.81 804.69 372.85 804.24 370.06 803.81 364.94 803.21 361.81 803.00 357.56 802.15 352.69 802.03 349.81 801.70 346.94 801.42 342.81 801.39 339.44 800.92 335.69 800.98 332.44 800.72 328.69 800.71 326.69 801.03 323.19 800.94 320.19 801.01 318.44 801.81 313.94 801.94 312.69 801.93 309.81 801.69 306.74 801.35 304.94 800.56 302.64 795.47 292.94 794.38 290.44 793.53 287.81 793.27 287.44 792.94 287.33 792.69 287.48 792.44 287.87 791.58 290.56 790.23 293.56 785.42 302.69 784.65 304.94 784.31 306.74 784.07 309.81 784.06 312.69 784.19 313.94 784.99 318.44 785.06 320.19 784.97 323.19 785.29 326.69 785.28 328.69 785.02 332.44 785.08 335.69 784.61 339.44 784.58 342.81 784.30 346.94 783.97 349.81 783.85 352.69 783.00 357.56 782.79 361.81 782.19 364.94 781.76 370.06 781.31 372.85 780.78 377.81 780.83 380.19 780.48 382.94 780.31 386.06 780.63 389.94 780.74 394.06 781.18 399.56 781.78 402.81 782.17 405.94 782.89 408.81 783.36 411.69 785.97 420.19 786.84 423.31 791.01 436.31 791.70 438.81 792.39 441.81 792.69 442.40ZM793.19 296.59 792.69 296.57 792.15 296.31 791.81 295.89 791.66 295.31 791.75 294.69 792.03 294.19 792.44 293.85 792.94 293.70 793.44 293.79 793.85 294.06 794.19 294.54 794.33 295.06 794.30 295.56 794.08 296.06 793.69 296.42ZM793.44 304.13 792.81 304.18 792.12 303.94 791.62 303.44 791.35 302.81 791.33 302.06 791.56 301.41 792.06 300.85 792.69 300.56 793.31 300.56 793.94 300.85 794.38 301.31 794.65 301.94 794.67 302.69 794.46 303.31 794.05 303.81ZM793.31 309.95 792.81 309.97 792.31 309.81 791.90 309.44 791.68 308.94 791.64 308.31 791.84 307.69 792.19 307.28 792.69 307.04 793.31 307.04 793.81 307.28 794.16 307.69 794.34 308.19 794.35 308.81 794.18 309.31 793.81 309.73ZM764.69 347.72 764.94 347.75 765.31 347.59 765.94 346.95 767.69 344.44 770.56 340.00 774.56 333.28 775.57 331.31 777.46 327.19 778.56 324.11 781.40 314.19 781.56 312.81 781.68 308.44 781.64 307.94 781.44 307.58 781.06 307.60 780.44 308.12 778.56 310.34 775.31 313.91 773.31 316.31 769.44 322.11 767.59 325.81 765.40 331.56 764.22 337.31 764.10 339.94 764.26 346.69 764.36 347.31ZM821.31 347.72 821.64 347.31 821.74 346.69 821.90 339.94 821.78 337.31 820.60 331.56 818.41 325.81 816.56 322.11 812.69 316.31 810.69 313.91 807.44 310.34 805.56 308.12 804.94 307.60 804.56 307.58 804.36 307.94 804.32 308.44 804.44 312.81 804.60 314.19 807.44 324.11 808.54 327.19 810.43 331.31 811.44 333.28 815.44 340.00 818.31 344.44 820.06 346.95 820.69 347.59 821.06 347.75ZM750.69 391.98 751.06 391.79 751.69 391.18 756.11 385.94 762.19 379.19 763.56 377.44 766.23 373.19 768.96 369.19 771.20 365.31 773.56 360.38 775.12 356.44 776.46 353.44 777.94 349.04 779.81 342.37 781.45 335.69 782.35 330.06 782.55 328.19 782.88 320.81 782.81 319.58 782.56 319.12 782.44 319.13 782.19 319.39 781.81 320.27 780.62 324.69 778.73 330.44 775.96 336.44 773.92 339.94 768.32 347.81 764.56 353.56 762.44 357.59 759.94 363.42 759.36 364.56 758.84 366.56 756.85 372.06 755.44 375.47 753.56 380.81 753.07 382.69 751.44 387.66 750.84 389.81 750.53 391.44 750.55 391.81ZM835.31 391.98 835.45 391.81 835.47 391.44 835.16 389.81 834.56 387.66 832.93 382.69 832.44 380.81 830.56 375.47 829.15 372.06 827.16 366.56 826.64 364.56 826.06 363.42 823.56 357.59 821.44 353.56 817.68 347.81 812.08 339.94 810.04 336.44 807.27 330.44 805.38 324.69 804.19 320.27 803.81 319.39 803.56 319.13 803.44 319.12 803.19 319.58 803.12 320.81 803.45 328.19 803.65 330.06 804.55 335.69 806.19 342.37 808.06 349.04 809.54 353.44 810.88 356.44 812.44 360.38 814.80 365.31 817.04 369.19 819.77 373.19 822.44 377.44 823.81 379.19 829.89 385.94 834.31 391.18 834.94 391.79ZM750.44 381.78 751.06 381.69 751.31 381.50 751.56 381.11 752.26 378.44 755.03 370.94 756.44 367.69 757.01 365.94 758.84 361.44 759.56 359.90 762.05 353.69 762.21 352.44 762.07 350.81 762.09 347.81 761.77 342.56 761.75 339.31 761.86 337.94 762.38 335.56 762.65 333.19 763.01 331.81 764.91 326.81 766.13 324.06 767.75 321.06 767.90 320.44 767.81 320.20 767.69 320.14 767.19 320.27 766.44 320.82 764.31 322.96 761.52 325.44 758.11 328.81 756.49 330.69 753.51 334.94 752.25 337.06 750.33 341.19 749.62 343.56 748.51 347.69 748.19 349.31 747.65 353.19 747.56 356.19 747.71 359.44 747.90 360.44 748.16 361.19 748.44 361.62 748.81 361.96 749.44 362.32 750.81 362.90 751.11 363.19 751.20 363.44 751.10 363.81 750.86 364.06 749.38 364.81 748.75 365.31 748.39 365.94 748.27 366.69 748.44 369.06 748.99 372.44 749.43 376.44 749.88 378.69 750.00 381.19 750.12 381.56ZM835.56 381.78 835.88 381.56 836.00 381.19 836.12 378.69 836.57 376.44 837.01 372.44 837.56 369.06 837.73 366.69 837.61 365.94 837.25 365.31 836.62 364.81 835.14 364.06 834.90 363.81 834.80 363.44 834.89 363.19 835.19 362.90 836.56 362.32 837.19 361.96 837.56 361.62 837.84 361.19 838.10 360.44 838.29 359.44 838.44 356.19 838.35 353.19 837.81 349.31 837.49 347.69 836.38 343.56 835.67 341.19 833.75 337.06 832.49 334.94 829.51 330.69 827.89 328.81 824.48 325.44 821.69 322.96 819.56 320.82 818.81 320.27 818.31 320.14 818.19 320.20 818.10 320.44 818.25 321.06 819.87 324.06 821.09 326.81 822.99 331.81 823.35 333.19 823.64 335.69 824.14 337.94 824.25 339.31 824.23 342.56 823.91 347.81 823.93 350.81 823.79 352.44 823.95 353.69 826.44 359.90 827.16 361.44 828.99 365.94 829.56 367.69 830.97 370.94 833.74 378.44 834.44 381.11 834.69 381.50 834.94 381.69ZM785.31 427.41 785.48 427.31 785.56 427.06 785.46 426.44 783.17 420.56 782.50 418.44 781.29 413.56 780.11 409.31 779.15 404.69 778.67 400.44 778.02 390.19 778.18 384.94 778.50 380.56 778.64 375.94 779.51 367.56 780.43 362.81 780.68 360.69 780.96 356.56 781.59 353.19 781.80 349.44 781.73 348.81 781.56 348.58 781.31 348.82 780.94 349.62 778.89 355.69 777.76 358.69 774.00 367.81 772.32 371.19 770.34 376.56 768.21 381.44 766.80 385.19 765.54 389.69 764.29 395.19 763.82 399.69 763.81 402.19 764.11 405.06 765.39 409.69 766.51 412.31 767.31 413.69 768.31 415.03 769.81 416.51 772.69 418.49 773.72 419.06 776.56 420.27 779.19 421.91 781.31 423.69 784.31 426.83 784.94 427.30ZM800.69 427.41 801.06 427.30 801.69 426.83 804.69 423.69 806.81 421.91 809.44 420.27 812.28 419.06 813.31 418.49 816.19 416.51 817.69 415.03 818.69 413.69 819.49 412.31 820.61 409.69 821.89 405.06 822.19 402.19 822.18 399.69 821.71 395.19 820.46 389.69 819.20 385.19 817.79 381.44 815.66 376.56 813.68 371.19 812.00 367.81 808.24 358.69 807.11 355.69 805.06 349.62 804.69 348.82 804.44 348.58 804.27 348.81 804.20 349.44 804.41 353.19 805.04 356.56 805.32 360.69 805.57 362.81 806.49 367.56 807.36 375.94 807.50 380.56 807.82 384.94 807.98 390.19 807.33 400.44 806.85 404.69 805.89 409.31 804.71 413.56 803.50 418.44 802.83 420.56 800.54 426.44 800.44 427.06 800.52 427.31ZM754.19 361.20 753.56 361.10 753.11 360.81 752.77 360.31 752.61 359.69 752.68 359.06 752.94 358.56 753.41 358.19 753.94 358.04 754.44 358.08 754.94 358.36 755.34 358.94 755.50 359.56 755.43 360.19 755.17 360.69 754.69 361.06ZM832.06 361.19 831.44 361.12 830.95 360.81 830.61 360.31 830.50 359.81 830.57 359.19 830.88 358.56 831.31 358.18 831.81 358.04 832.44 358.12 832.94 358.43 833.27 358.94 833.39 359.44 833.32 360.06 833.06 360.61 832.69 360.98Z" fill="#fff" fill-rule="evenodd"/></g><g class="sline"><g transform="translate(287.4 171.6) scale(.638)"><path d="M792.69 504.47 792.19 504.42 791.89 504.06 791.84 503.81 791.94 503.45 792.31 503.14 792.81 503.20 793.11 503.56 793.16 503.81 793.06 504.17ZM734.81 515.19 734.32 515.06 732.19 514.02 730.94 513.67 725.06 513.02 723.94 513.07 723.26 513.31 722.98 513.56 722.84 513.94 722.87 514.44 723.04 514.81 723.57 515.44 726.41 517.81 726.83 518.31 726.69 518.40 726.31 518.37 725.12 517.81 723.92 516.81 721.56 514.46 720.67 513.31 719.63 512.19 719.49 511.81 719.69 511.53 720.19 511.42 722.81 511.55 727.31 511.28 729.44 511.45 730.83 511.94 732.20 512.69 733.76 513.94 734.58 514.81ZM850.19 515.19 850.42 514.81 851.24 513.94 852.80 512.69 854.17 511.94 855.56 511.45 857.69 511.28 862.19 511.55 864.81 511.42 865.31 511.53 865.51 511.81 865.37 512.19 864.33 513.31 863.44 514.46 861.08 516.81 859.88 517.81 858.69 518.37 858.31 518.40 858.17 518.31 858.59 517.81 861.43 515.44 861.96 514.81 862.13 514.44 862.16 513.94 862.02 513.56 861.74 513.31 861.06 513.07 859.94 513.02 854.06 513.67 852.81 514.02 850.68 515.06ZM792.56 550.45 792.19 550.36 791.85 549.94 790.99 547.69 789.11 543.81 786.81 539.79 784.99 536.19 782.68 532.31 782.39 531.44 782.54 530.56 783.56 528.10 786.13 524.06 789.69 517.75 790.19 517.02 790.56 516.74 790.64 516.94 790.61 517.44 790.31 518.58 786.86 525.81 785.23 529.44 784.99 530.19 784.96 530.81 785.07 531.44 785.35 532.19 786.75 534.81 787.94 536.69 789.84 539.31 791.34 542.19 791.81 542.84 792.19 543.09 792.69 543.13 793.06 542.95 793.44 542.55 795.06 539.47 797.06 536.69 798.25 534.81 799.65 532.19 800.03 530.94 800.01 530.19 799.77 529.44 798.14 525.81 794.69 518.58 794.39 517.44 794.36 516.94 794.44 516.74 794.81 517.02 795.31 517.75 798.87 524.06 801.44 528.10 802.44 530.51 802.61 531.19 802.57 531.69 802.39 532.19 800.01 536.19 798.19 539.79 795.89 543.81 794.01 547.69 793.19 549.87 792.94 550.25ZM465.44 537.19 465.51 536.06 465.73 534.94 466.70 532.06 467.42 530.69 469.31 527.94 470.03 527.19 471.20 526.31 474.19 524.36 475.94 523.38 478.56 522.24 483.33 520.56 484.56 520.24 490.31 519.34 499.19 518.93 500.94 519.00 504.44 519.34 511.70 520.44 523.19 523.24 529.19 525.06 534.76 527.06 538.31 528.66 540.31 529.34 543.56 530.77 547.06 532.11 552.94 534.78 556.94 536.32 559.94 537.75 563.54 539.19 568.69 541.63 573.19 543.50 576.19 544.41 579.56 545.82 581.81 546.61 586.86 547.94 591.31 549.20 594.06 550.14 595.94 550.59 599.69 551.06 602.81 551.68 608.69 552.20 609.69 552.22 610.31 552.12 610.62 551.94 610.72 551.56 610.58 551.31 610.31 551.13 607.56 550.06 605.69 548.94 603.58 547.44 601.69 545.62 599.94 543.16 599.19 541.86 598.07 539.56 597.74 538.69 597.57 537.94 597.56 537.19 597.69 536.51 597.94 536.03 598.31 535.83 598.69 535.92 599.06 536.27 599.44 536.88 599.90 537.94 601.06 541.48 601.56 542.14 601.94 542.29 602.19 542.25 602.44 542.04 602.61 541.69 603.19 538.81 604.02 536.81 604.96 535.31 605.86 534.31 607.30 533.31 609.56 532.31 612.06 531.51 615.31 530.68 615.75 530.69 616.08 530.81 616.26 531.06 616.27 531.44 616.07 531.94 615.22 533.31 614.92 534.19 614.72 535.56 614.47 539.06 614.28 540.06 613.79 541.19 612.94 542.50 612.19 543.28 611.44 543.82 610.56 544.21 610.19 544.27 610.06 544.19 611.64 541.81 612.02 540.94 612.23 540.06 612.15 539.31 611.44 538.31 611.35 537.81 611.49 537.31 612.40 535.31 612.50 534.44 612.35 534.06 612.06 533.82 611.69 533.72 611.19 533.75 608.31 534.78 607.31 535.24 606.06 536.14 605.01 537.31 604.21 538.69 603.85 540.06 603.77 542.19 603.87 543.44 604.07 544.19 604.53 544.81 605.19 545.14 605.94 545.24 607.31 545.19 607.72 545.31 607.60 545.56 606.69 546.06 606.34 546.44 606.23 547.06 606.43 547.56 606.78 547.94 609.69 549.84 611.56 550.87 613.81 551.46 616.69 551.96 624.19 552.56 626.44 552.48 630.44 551.98 634.94 551.77 637.69 551.36 642.19 550.87 644.31 550.20 646.56 549.74 648.94 549.04 654.06 547.74 661.06 545.73 667.44 543.65 672.44 541.84 677.69 539.70 681.19 538.15 684.56 536.81 686.19 536.06 689.94 534.63 695.19 532.23 705.31 528.69 712.14 526.06 712.78 525.69 712.90 525.44 712.59 525.06 711.49 524.56 711.53 524.44 713.19 523.96 713.94 523.89 714.81 523.96 716.81 524.43 718.31 524.31 721.44 523.43 723.94 522.89 727.06 522.06 731.56 521.13 732.73 520.69 733.56 519.91 733.94 519.68 734.69 519.54 736.81 519.44 737.31 519.27 738.19 518.71 738.44 518.76 739.69 519.42 740.56 519.67 746.49 520.06 753.09 521.06 756.06 521.97 758.35 522.44 760.27 523.19 765.85 526.31 766.33 526.69 767.34 527.81 769.06 528.94 769.81 529.54 771.31 531.15 772.70 532.94 773.84 534.69 774.04 535.19 774.08 535.56 773.94 536.03 773.69 536.25 773.31 536.29 773.06 536.16 772.81 535.79 772.35 534.31 771.87 533.44 770.87 532.19 769.81 531.12 767.19 528.85 766.19 528.09 764.06 526.87 762.06 525.90 759.69 524.96 756.56 523.90 750.19 522.50 747.94 522.14 743.69 521.76 742.06 521.70 739.94 521.82 735.83 522.44 731.81 522.88 727.69 523.61 722.56 525.01 719.24 526.06 715.81 527.02 712.31 528.23 709.69 529.25 708.38 529.94 707.75 530.44 706.48 532.19 706.03 533.44 703.69 535.03 702.06 536.47 700.32 538.31 700.05 538.81 700.06 539.15 700.44 539.30 701.06 539.14 705.31 537.08 708.78 535.94 709.29 535.44 709.38 534.31 709.81 533.99 711.69 533.69 712.44 533.72 712.80 533.94 712.87 534.19 712.80 534.44 712.52 534.81 711.23 535.81 709.82 537.19 709.06 537.68 702.69 540.73 696.31 543.21 693.94 544.35 693.56 544.37 693.34 544.19 693.31 543.94 693.44 543.56 696.31 540.02 698.91 537.31 701.31 535.21 702.65 534.19 704.44 533.18 705.07 532.69 705.52 532.19 705.71 531.81 705.72 531.31 705.56 531.03 705.31 530.88 704.94 530.83 703.94 531.06 695.01 534.69 691.06 536.13 685.06 538.81 680.69 540.17 675.06 542.46 672.31 543.29 663.23 546.56 660.56 547.24 652.23 549.69 649.31 550.46 645.19 551.37 642.31 551.74 636.56 552.72 633.81 553.30 630.06 553.69 625.94 553.98 619.06 553.99 615.69 554.08 607.69 553.65 605.56 553.44 595.22 551.56 593.31 551.03 590.94 550.65 587.34 549.69 582.56 548.16 577.69 546.74 574.96 545.69 573.19 544.89 566.56 542.56 560.69 539.99 557.00 538.69 551.44 536.13 547.52 534.69 541.94 532.15 539.44 531.15 537.69 530.57 531.81 528.08 525.69 526.28 523.44 525.78 521.69 525.21 519.56 524.70 517.69 524.11 514.44 523.58 512.06 522.98 507.06 522.17 502.19 521.85 496.94 521.70 492.81 521.75 487.81 522.03 483.81 522.81 482.45 523.19 479.56 524.25 477.69 525.05 474.96 526.56 473.93 527.31 473.81 527.56 473.83 527.94 474.00 528.19 474.31 528.42 475.56 528.93 476.31 529.39 477.19 530.15 477.75 530.81 478.25 531.69 478.50 532.56 478.55 533.44 478.37 534.44 477.87 535.56 477.06 536.63 475.14 538.44 472.69 540.40 471.69 541.36 471.06 542.28 470.55 543.69 470.31 543.98 469.94 544.19 469.31 544.18 468.69 543.83 467.41 542.44 466.66 541.44 466.10 540.44 465.79 539.56 465.54 538.44ZM1119.56 537.19 1119.46 538.44 1119.21 539.56 1118.90 540.44 1118.34 541.44 1117.59 542.44 1116.31 543.83 1115.69 544.18 1115.06 544.19 1114.69 543.98 1114.45 543.69 1113.94 542.28 1113.31 541.36 1112.31 540.40 1109.86 538.44 1107.94 536.63 1107.13 535.56 1106.63 534.44 1106.45 533.44 1106.50 532.56 1106.75 531.69 1107.25 530.81 1107.81 530.15 1108.69 529.39 1109.44 528.93 1110.69 528.42 1111.00 528.19 1111.17 527.94 1111.19 527.56 1111.07 527.31 1110.04 526.56 1107.31 525.05 1105.44 524.25 1102.55 523.19 1101.19 522.81 1097.19 522.03 1092.19 521.75 1088.06 521.70 1082.81 521.85 1077.94 522.17 1072.94 522.98 1070.56 523.58 1067.31 524.11 1065.44 524.70 1063.31 525.21 1061.56 525.78 1059.31 526.28 1053.19 528.08 1047.31 530.57 1045.56 531.15 1043.06 532.15 1037.48 534.69 1033.56 536.13 1028.00 538.69 1024.31 539.99 1018.44 542.56 1011.81 544.89 1010.04 545.69 1007.31 546.74 1002.44 548.16 997.66 549.69 994.06 550.65 991.69 551.03 989.78 551.56 979.44 553.44 977.31 553.65 969.31 554.08 965.94 553.99 959.06 553.98 954.94 553.69 951.19 553.30 948.44 552.72 942.69 551.74 939.81 551.37 935.69 550.46 932.77 549.69 924.44 547.24 921.77 546.56 912.69 543.29 909.94 542.46 904.31 540.17 899.94 538.81 893.94 536.13 889.99 534.69 881.06 531.06 880.06 530.83 879.69 530.88 879.44 531.03 879.28 531.31 879.29 531.81 879.48 532.19 879.93 532.69 880.56 533.18 882.35 534.19 883.69 535.21 886.09 537.31 888.69 540.02 891.56 543.56 891.69 543.94 891.66 544.19 891.44 544.37 891.06 544.35 888.69 543.21 882.31 540.73 875.94 537.68 875.18 537.19 873.77 535.81 872.48 534.81 872.20 534.44 872.13 534.19 872.20 533.94 872.56 533.72 873.31 533.69 875.19 533.99 875.62 534.31 875.71 535.44 876.22 535.94 879.69 537.08 883.94 539.14 884.56 539.30 884.94 539.15 884.95 538.81 884.68 538.31 882.94 536.47 881.31 535.03 878.97 533.44 878.52 532.19 877.25 530.44 876.62 529.94 875.31 529.25 872.69 528.23 869.19 527.02 865.76 526.06 862.44 525.01 857.31 523.61 853.19 522.88 849.17 522.44 845.06 521.82 842.94 521.70 841.31 521.76 837.06 522.14 834.81 522.50 828.44 523.90 825.31 524.96 822.94 525.90 820.94 526.87 818.81 528.09 817.81 528.85 815.19 531.12 814.13 532.19 813.13 533.44 812.65 534.31 812.19 535.79 811.94 536.16 811.69 536.29 811.31 536.25 811.06 536.03 810.92 535.56 810.96 535.19 811.16 534.69 812.30 532.94 813.69 531.15 815.19 529.54 815.94 528.94 817.66 527.81 818.67 526.69 819.15 526.31 824.73 523.19 826.65 522.44 828.94 521.97 831.91 521.06 838.51 520.06 844.44 519.67 845.31 519.42 846.56 518.76 846.81 518.71 847.69 519.27 848.19 519.44 850.31 519.54 851.06 519.68 851.44 519.91 852.27 520.69 853.44 521.13 857.94 522.06 861.06 522.89 863.56 523.43 866.69 524.31 868.19 524.43 870.19 523.96 871.06 523.89 871.81 523.96 873.47 524.44 873.51 524.56 872.41 525.06 872.10 525.44 872.22 525.69 872.86 526.06 879.69 528.69 889.81 532.23 895.06 534.63 898.81 536.06 900.44 536.81 903.81 538.15 907.31 539.70 912.56 541.84 917.56 543.65 923.94 545.73 930.94 547.74 936.06 549.04 938.44 549.74 940.69 550.20 942.81 550.87 947.31 551.36 950.06 551.77 954.56 551.98 958.56 552.48 960.81 552.56 968.31 551.96 971.19 551.46 973.44 550.87 975.31 549.84 978.22 547.94 978.57 547.56 978.77 547.06 978.66 546.44 978.31 546.06 977.40 545.56 977.28 545.31 977.69 545.19 979.06 545.24 979.81 545.14 980.47 544.81 980.93 544.19 981.13 543.44 981.23 542.19 981.15 540.06 980.79 538.69 979.99 537.31 978.94 536.14 977.69 535.24 976.69 534.78 973.81 533.75 973.31 533.72 972.94 533.82 972.65 534.06 972.50 534.44 972.60 535.31 973.51 537.31 973.65 537.81 973.56 538.31 972.85 539.31 972.77 540.06 972.98 540.94 973.36 541.81 974.94 544.19 974.81 544.27 974.44 544.21 973.56 543.82 972.81 543.28 972.06 542.50 971.21 541.19 970.72 540.06 970.53 539.06 970.28 535.56 970.08 534.19 969.78 533.31 968.93 531.94 968.73 531.44 968.74 531.06 968.92 530.81 969.25 530.69 969.69 530.68 972.94 531.51 975.44 532.31 977.70 533.31 979.14 534.31 980.04 535.31 980.98 536.81 981.81 538.81 982.39 541.69 982.56 542.04 982.81 542.25 983.06 542.29 983.44 542.14 983.94 541.48 985.10 537.94 985.56 536.88 985.94 536.27 986.31 535.92 986.69 535.83 987.06 536.03 987.31 536.51 987.44 537.19 987.43 537.94 987.26 538.69 986.93 539.56 985.81 541.86 985.06 543.16 983.31 545.62 981.42 547.44 979.31 548.94 977.44 550.06 974.69 551.13 974.42 551.31 974.28 551.56 974.38 551.94 974.69 552.12 975.31 552.22 976.31 552.20 982.19 551.68 985.31 551.06 989.06 550.59 990.94 550.14 993.69 549.20 998.14 547.94 1003.19 546.61 1005.44 545.82 1008.81 544.41 1011.81 543.50 1016.31 541.63 1021.46 539.19 1025.06 537.75 1028.06 536.32 1032.06 534.78 1037.94 532.11 1041.44 530.77 1044.69 529.34 1046.69 528.66 1050.24 527.06 1055.81 525.06 1061.81 523.24 1073.30 520.44 1080.56 519.34 1084.06 519.00 1085.81 518.93 1094.69 519.34 1100.44 520.24 1101.67 520.56 1106.44 522.24 1109.06 523.38 1110.81 524.36 1113.80 526.31 1114.97 527.19 1115.69 527.94 1117.58 530.69 1118.30 532.06 1119.27 534.94 1119.49 536.06ZM706.61 524.56 706.38 524.69 705.56 524.78 703.81 524.69 699.62 523.69 697.69 522.83 696.01 521.81 695.42 521.31 695.24 520.81 695.39 520.56 695.81 520.39 698.06 520.20 701.69 519.44 703.06 519.37 704.06 519.56 705.59 520.31 705.82 520.56 705.83 520.81 705.31 520.98 703.06 520.96 701.94 521.13 701.31 521.38 700.94 521.69 700.81 521.94 700.83 522.31 701.14 522.69 701.69 522.97ZM878.39 524.56 883.31 522.97 883.86 522.69 884.17 522.31 884.19 521.94 884.06 521.69 883.69 521.38 883.06 521.13 881.94 520.96 879.69 520.98 879.17 520.81 879.18 520.56 879.41 520.31 880.94 519.56 881.94 519.37 883.31 519.44 886.94 520.20 889.19 520.39 889.61 520.56 889.76 520.81 889.58 521.31 888.99 521.81 887.31 522.83 885.38 523.69 881.19 524.69 879.44 524.78 878.62 524.69ZM469.44 539.52 470.06 539.54 470.81 539.15 474.44 536.31 475.19 535.57 475.62 534.94 475.90 534.31 476.08 533.56 476.10 532.94 475.99 532.31 475.74 531.69 475.44 531.26 474.44 530.50 472.69 529.79 472.06 529.71 471.44 529.81 470.81 530.11 470.19 530.65 469.54 531.44 468.98 532.31 468.51 533.31 468.24 534.19 468.09 535.19 468.10 536.19 468.26 537.44 468.55 538.44 468.94 539.13ZM1115.69 539.46 1116.19 538.95 1116.54 538.19 1116.79 537.19 1116.92 535.94 1116.88 534.94 1116.69 533.94 1116.39 533.06 1115.94 532.19 1115.37 531.31 1114.72 530.56 1114.19 530.11 1113.56 529.81 1112.94 529.71 1112.31 529.79 1110.44 530.57 1109.90 530.94 1109.44 531.42 1108.97 532.44 1108.89 533.06 1108.94 533.69 1109.15 534.44 1109.45 535.06 1109.91 535.69 1110.56 536.31 1114.31 539.24 1115.06 539.57ZM792.69 561.37 791.94 561.27 791.19 560.75 790.47 559.81 790.17 558.94 790.26 558.19 790.72 557.44 791.50 556.81 792.31 556.55 793.19 556.67 793.94 557.12 794.56 557.82 794.84 558.69 794.66 559.56 794.10 560.44 793.44 561.06ZM793.27 568.06 792.69 568.33 791.94 568.21 791.55 567.81 791.50 567.44 791.58 567.19 791.81 566.93 792.19 566.74 792.56 566.70 793.00 566.81 793.33 567.06 793.50 567.44 793.45 567.81Z" fill="#fff" fill-rule="evenodd"/></g><g transform="translate(223.2 152.2) scale(.719)"><path d="M792.94 698.31 792.56 698.39 792.06 698.31 791.67 698.06 791.39 697.69 791.26 697.19 791.31 696.77 791.56 696.35 791.94 696.09 792.44 695.97 792.94 696.04 793.40 696.31 793.66 696.69 793.74 697.19 793.61 697.69 793.33 698.06ZM792.56 743.21 792.19 743.12 791.81 742.68 790.96 740.81 788.74 736.69 784.19 729.28 782.50 725.56 782.22 724.44 782.28 723.94 782.48 723.44 783.89 721.06 787.21 714.56 790.67 708.31 791.72 705.56 792.06 705.09 792.44 704.91 792.90 705.06 793.28 705.56 794.33 708.31 797.79 714.56 801.11 721.06 802.52 723.44 802.72 723.94 802.78 724.44 802.50 725.56 800.86 729.19 796.26 736.69 794.04 740.81 793.19 742.68 792.88 743.06ZM774.03 718.81 773.78 719.56 772.32 722.06 771.41 723.19 769.94 724.63 767.56 726.53 765.94 727.62 763.81 728.74 761.69 729.65 759.31 730.26 757.31 731.01 755.44 731.52 751.56 732.36 748.31 732.85 744.81 733.22 742.81 733.33 737.56 733.24 734.19 733.06 729.94 732.39 726.69 731.98 724.44 731.33 722.19 730.95 720.19 730.37 717.31 729.77 710.69 727.57 706.94 726.04 703.57 724.81 695.94 721.59 694.94 721.36 693.06 721.29 692.57 720.94 692.12 719.94 691.70 719.44 691.15 719.06 683.19 715.14 679.06 713.35 674.94 711.96 672.56 711.01 667.19 709.46 662.56 708.45 658.81 708.08 655.44 708.03 653.19 708.21 650.94 708.62 649.56 709.03 647.31 709.96 644.94 710.34 643.31 711.05 641.41 712.19 639.91 713.44 638.73 714.94 638.21 715.94 637.89 716.81 637.84 717.44 638.06 717.87 638.56 718.06 639.19 717.93 643.94 715.41 644.88 714.56 645.66 712.81 646.06 712.51 646.31 712.56 646.56 712.82 646.94 713.69 647.14 714.44 647.04 715.31 646.55 716.31 645.48 717.56 644.44 718.29 643.69 718.58 642.31 718.84 641.31 719.16 639.06 720.15 637.94 720.77 637.14 721.56 636.26 723.44 635.69 724.02 635.19 724.06 634.84 723.81 634.60 723.31 634.51 722.56 634.57 718.81 634.67 718.06 634.88 717.44 638.09 712.56 639.06 711.38 640.06 710.45 641.19 709.67 642.44 708.99 643.94 708.31 647.06 707.10 648.56 706.74 653.19 705.91 655.06 705.74 657.31 705.79 659.81 705.96 665.56 706.88 673.81 709.36 675.56 710.05 679.06 711.64 681.19 712.38 683.31 713.29 691.19 717.24 693.94 718.74 698.19 720.76 708.19 724.75 713.56 726.40 716.69 727.63 719.19 728.33 721.56 729.14 726.44 730.20 729.06 730.58 738.19 731.42 740.94 731.51 743.19 731.40 746.31 731.07 748.56 730.67 750.45 730.19 750.88 729.94 751.01 729.69 750.92 729.44 750.69 729.26 746.44 727.96 745.44 727.45 744.11 726.56 743.06 725.69 742.31 724.86 741.86 724.19 741.72 723.56 741.94 723.13 742.44 722.89 742.94 722.88 744.56 723.16 745.81 723.10 746.81 722.86 750.26 721.69 750.94 721.56 751.94 721.67 753.69 722.28 755.00 723.19 755.21 723.44 755.24 723.69 755.06 723.82 754.56 723.86 750.56 723.56 748.06 723.97 746.56 724.12 746.14 724.31 745.89 724.69 745.90 725.06 746.19 725.56 746.87 726.06 748.31 726.70 752.56 727.78 757.56 728.21 758.69 728.17 759.81 727.94 760.94 727.58 763.06 726.73 765.06 725.72 767.44 724.37 769.06 723.19 770.56 721.78 771.72 720.44 772.94 718.56 773.18 718.31 773.56 718.18 773.81 718.27 773.96 718.44ZM810.97 718.81 811.04 718.44 811.19 718.27 811.44 718.18 811.82 718.31 812.06 718.56 813.28 720.44 814.44 721.78 815.94 723.19 817.56 724.37 819.94 725.72 821.94 726.73 824.06 727.58 825.19 727.94 826.31 728.17 827.44 728.21 832.44 727.78 836.69 726.70 838.13 726.06 838.81 725.56 839.10 725.06 839.11 724.69 838.86 724.31 838.44 724.12 836.94 723.97 834.44 723.56 830.44 723.86 829.94 723.82 829.76 723.69 829.79 723.44 830.00 723.19 831.31 722.28 833.06 721.67 834.06 721.56 834.74 721.69 838.19 722.86 839.19 723.10 840.44 723.16 842.06 722.88 842.56 722.89 843.06 723.13 843.28 723.56 843.14 724.19 842.69 724.86 841.94 725.69 840.89 726.56 839.56 727.45 838.56 727.96 834.31 729.26 834.08 729.44 833.99 729.69 834.12 729.94 834.55 730.19 836.44 730.67 838.69 731.07 841.81 731.40 844.06 731.51 846.81 731.42 855.94 730.58 858.56 730.20 863.44 729.14 865.81 728.33 868.31 727.63 871.44 726.40 876.81 724.75 886.81 720.76 891.06 718.74 893.81 717.24 901.69 713.29 903.81 712.38 905.94 711.64 909.44 710.05 911.19 709.36 919.44 706.88 925.19 705.96 927.69 705.79 929.94 705.74 931.81 705.91 936.44 706.74 937.94 707.10 941.06 708.31 942.56 708.99 943.81 709.67 944.94 710.45 945.94 711.38 946.91 712.56 950.12 717.44 950.33 718.06 950.43 718.81 950.49 722.56 950.40 723.31 950.16 723.81 949.81 724.06 949.31 724.02 948.74 723.44 947.86 721.56 947.06 720.77 945.94 720.15 943.69 719.16 942.69 718.84 941.31 718.58 940.56 718.29 939.52 717.56 938.45 716.31 937.96 715.31 937.86 714.44 938.06 713.69 938.44 712.82 938.69 712.56 938.94 712.51 939.34 712.81 940.12 714.56 941.06 715.41 945.81 717.93 946.44 718.06 946.94 717.87 947.16 717.44 947.11 716.81 946.79 715.94 946.27 714.94 945.09 713.44 943.59 712.19 941.69 711.05 940.06 710.34 937.69 709.96 935.44 709.03 934.06 708.62 931.81 708.21 929.56 708.03 926.19 708.08 922.44 708.45 917.81 709.46 912.44 711.01 910.06 711.96 905.94 713.35 901.81 715.14 893.85 719.06 893.30 719.44 892.88 719.94 892.43 720.94 891.94 721.29 890.06 721.36 889.06 721.59 881.43 724.81 878.06 726.04 874.31 727.57 867.69 729.77 864.81 730.37 862.81 730.95 860.56 731.33 858.31 731.98 855.06 732.39 850.81 733.06 847.44 733.24 842.19 733.33 840.19 733.22 836.69 732.85 833.44 732.36 829.56 731.52 827.69 731.01 825.69 730.26 823.31 729.65 821.19 728.74 819.06 727.62 817.44 726.53 815.06 724.63 813.59 723.19 812.68 722.06 811.22 719.56ZM792.56 736.94 792.94 736.73 793.31 736.23 795.42 732.31 797.69 728.54 799.67 724.94 799.88 724.06 799.78 723.44 799.52 722.81 797.72 719.31 795.15 714.69 794.16 712.56 793.31 710.31 792.94 709.80 792.44 709.62 792.06 709.80 791.69 710.31 790.84 712.56 789.85 714.69 787.28 719.31 785.48 722.81 785.22 723.44 785.12 724.06 785.19 724.56 785.39 725.06 787.31 728.54 789.72 732.56 791.56 736.02 792.06 736.73 792.31 736.91ZM691.14 725.69 690.91 726.44 690.07 728.06 689.31 729.13 688.65 729.81 687.81 730.45 687.06 730.85 685.31 731.52 684.06 731.82 682.94 731.87 681.81 731.68 679.18 730.81 676.31 729.73 674.94 729.33 673.44 729.20 671.31 729.52 670.82 729.31 670.63 728.94 670.72 728.44 671.04 727.94 674.19 724.44 675.56 723.16 676.81 722.28 678.19 721.62 679.72 721.06 681.56 720.64 683.31 720.52 683.94 720.64 684.09 720.81 683.59 721.19 680.81 722.35 678.69 723.53 676.97 724.81 676.47 725.31 676.14 725.81 676.05 726.19 676.19 726.49 677.44 726.88 677.90 727.56 678.44 727.97 680.56 728.75 682.06 729.13 683.69 729.32 685.06 729.24 686.44 728.84 687.56 728.16 688.37 727.44 689.44 726.05 690.06 725.54 690.81 725.33 691.06 725.44ZM893.86 725.69 893.94 725.44 894.19 725.33 894.94 725.54 895.56 726.05 896.63 727.44 897.44 728.16 898.56 728.84 899.94 729.24 901.31 729.32 902.94 729.13 904.44 728.75 906.56 727.97 907.10 727.56 907.56 726.88 908.81 726.49 908.95 726.19 908.86 725.81 908.53 725.31 908.03 724.81 906.31 723.53 904.19 722.35 901.41 721.19 900.91 720.81 901.06 720.64 901.69 720.52 903.44 720.64 905.28 721.06 906.81 721.62 908.19 722.28 909.44 723.16 910.81 724.44 913.96 727.94 914.28 728.44 914.37 728.94 914.18 729.31 913.69 729.52 911.56 729.20 910.06 729.33 908.69 729.73 905.82 730.81 903.19 731.68 902.06 731.87 900.94 731.82 899.69 731.52 897.94 730.85 897.19 730.45 896.35 729.81 895.69 729.13 894.93 728.06 894.09 726.44ZM792.94 754.88 792.06 754.88 791.31 754.55 790.44 753.65 790.02 752.69 790.08 751.81 790.56 750.94 791.31 750.23 792.06 749.94 792.94 749.94 793.81 750.31 794.62 751.19 794.98 752.06 794.94 752.86 794.53 753.69 793.69 754.55ZM792.56 762.20 792.19 762.13 791.94 761.97 791.67 761.44 791.82 760.81 792.09 760.56 792.44 760.45 792.81 760.51 793.06 760.68 793.25 760.94 793.34 761.31 793.26 761.69 793.09 761.94Z" fill="#fff" fill-rule="evenodd"/></g></g></svg><div class="stxt" id="saveTxt"></div></div><img src="./assets/team-cherry-intro.png" alt="team cherry"></div>
+</div></div>
+<script>
+var LANG="es";
+var TXT={es:{save:["Este juego guarda los datos automáticamente en ciertos puntos.","Por favor no cierres el programa mientras este símbolo aparezca en pantalla."]}};
+function applyLang(){var st=document.getElementById("saveTxt");if(st)st.innerHTML=TXT[LANG].save.map(function(l){return "<span>"+l+"</span>";}).join("");fitSave();}
+function fitSave(){var t=document.getElementById("saveTxt"),sg=document.getElementById("stage");if(!t||!sg||!sg.offsetWidth)return;t.style.fontSize="1.95cqw";var w=0;[].forEach.call(t.children,function(s){var r=document.createRange();r.selectNodeContents(s);w=Math.max(w,r.getBoundingClientRect().width/(window.STAGESC||1));});if(w>0)t.style.fontSize=(1.95*sg.offsetWidth*0.537/w).toFixed(3)+"cqw";}
+addEventListener("resize",fitSave);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitSave);addEventListener("load",fitSave);
+applyLang();
+var items=["Iniciar partida","Opciones","Logros","Extras","Salir del juego"];
+var isMobile=/Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1)||(window.matchMedia&&matchMedia("(pointer:coarse)").matches&&navigator.maxTouchPoints>0);
+var optItems=["Juego","Audio","Vídeo","Mando","Teclado","Táctil","Atrás"].filter(function(t){return isMobile||t!=="Táctil";});   // "Táctil" solo en móvil/tablet
+// ---- Límite de fotogramas: 0 = Desactivada (sin límite). Con un valor, todas las animaciones del menú se actualizan como máximo esa cantidad de veces por segundo ----
+var FL={lim:0,last:0,rl:0,on:false,t0:new WeakMap(),done:new WeakSet(),all:new Set()};
+var _nativeRaf=window.requestAnimationFrame.bind(window);
+function flRelease(ts){
+  FL.all.forEach(function(a){
+    if(FL.done.has(a)||a.playState==="idle"){FL.all.delete(a);return;}
+    try{a.currentTime=ts-FL.t0.get(a);a.play();}catch(e){}
+    FL.all.delete(a);
+  });
+  FL.t0=new WeakMap();FL.on=false;
+}
+function flTick(ts){
+  _nativeRaf(flTick);
+  if(!FL.lim){if(FL.on)flRelease(ts);return;}
+  var iv=1000/FL.lim;
+  if(ts-FL.last<iv-1)return;
+  FL.last=ts-((ts-FL.last)%iv);FL.on=true;
+  document.getAnimations().forEach(function(a){
+    if(FL.done.has(a)||a.playState==="finished")return;
+    if(!FL.t0.has(a)){FL.t0.set(a,ts-(a.currentTime||0));FL.all.add(a);try{a.pause();}catch(e){}}
+    var t=ts-FL.t0.get(a),end=Infinity;
+    try{end=a.effect.getComputedTiming().endTime;}catch(e){}
+    if(t>=end){FL.done.add(a);FL.all.delete(a);try{a.finish();}catch(e){}}   // termina de verdad para que se dispare animationend
+    else a.currentTime=t;
+  });
+}
+_nativeRaf(flTick);
+function applyFpsLimit(){
+  var i=-1;videoOpts.forEach(function(o,j){if(o.n==="Límite de fotogramas")i=j;});
+  if(i<0)return;
+  var v=parseInt(FPSV[videoVal[i]],10);FL.lim=isNaN(v)?0:v;
+}
+function arrowHTML(){return '<span class="a"><span class="s"></span></span>';}
+var arrowL=arrowHTML(),arrowR=arrowHTML();
+var menu=document.getElementById("menu"),omenu=document.getElementById("omenu"),oback=document.getElementById("oback");
+var optsEl=document.getElementById("opts"),orn=document.getElementById("orn"),stg=document.getElementById("stage");
+var mainEls=[],optEls=[],els=mainEls,cur=0;       // els = las opciones de la pantalla que está activa
+function mkItem(t,i,list,host){
+  var d=document.createElement("div");d.className="item";
+  d.innerHTML=arrowL+'<span class="tw"><span class="g"></span><span class="t">'+t+'</span></span>'+arrowR;
+  d.onmouseenter=function(){if(els===list)sel(i)};
+  host.appendChild(d);list.push(d);
+}
+items.forEach(function(t,i){mkItem(t,i,mainEls,menu)});
+optItems.forEach(function(t,i){mkItem(t,i,optEls,i<optItems.length-1?omenu:oback)});   // "Atrás" va aparte, abajo
+function setSel(i){cur=i;els.forEach(function(e,j){e.classList.toggle("sel",j===i)});}   // cambia la selección sin sonido
+function sel(i){var ch=(i!==cur);setSel(i);if(ch)sfxPlay();}
+sel(0);
+// deslizar el dedo (o el mouse apretado) por las opciones: las flechitas siguen al dedo, una por una
+function nearest(y){var best=0,bd=1e9;els.forEach(function(e,i){var r=e.getBoundingClientRect(),c=(r.top+r.bottom)/2,dd=Math.abs(y-c);if(dd<bd){bd=dd;best=i;}});return best;}
+var pressing=false;
+function endPress(e){var was=pressing;pressing=false;if(was&&e&&e.type==="pointerup")choose();}
+function bindNav(n){
+  n.style.touchAction="none";
+  n.addEventListener("pointerdown",function(e){pressing=true;try{n.setPointerCapture(e.pointerId);}catch(_){}var i=nearest(e.clientY);if(i!==cur)sel(i);});
+  n.addEventListener("pointermove",function(e){if(!pressing)return;var i=nearest(e.clientY);if(i!==cur)sel(i);});
+  n.addEventListener("pointerup",endPress);n.addEventListener("pointercancel",endPress);
+}
+[menu,omenu,oback].forEach(bindNav);
+document.addEventListener("keydown",function(e){
+  if(document.getElementById("intro"))return;
+  if(e.key==="Escape"&&els===quitEls&&!busy){e.preventDefault();sel(1);choose();return;}   // Esc = "No"
+  if(e.key==="ArrowDown")sel((cur+1)%els.length);
+  if(e.key==="ArrowUp")sel((cur+els.length-1)%els.length);
+  if(els===audioEls&&cur<3&&(e.key==="ArrowLeft"||e.key==="ArrowRight")){if(!(e.repeat&&performance.now()-lastStep<130)){lastStep=performance.now();volSet(cur,volGet(cur)+(e.key==="ArrowRight"?1:-1));}}   // al mantener apretada la flecha avanza de a un paso, con tope de velocidad (trabado)
+  if(els===gameEls&&e.key==="ArrowLeft")gameChange(cur,-1);
+  if(els===gameEls&&e.key==="ArrowRight")gameChange(cur,1);
+  if(els===videoEls&&(e.key==="ArrowLeft"||e.key==="ArrowRight"))videoChange(cur,e.key==="ArrowRight"?1:-1);
+  if((e.key==="Enter"||e.key===" ")&&els===videoEls&&cur===1){e.preventDefault();applyRes();return;}   // en Resolución, Enter aplica
+  if(e.key==="Enter"||e.key===" "){e.preventDefault();choose();}
+});
+// elegir una opción: mismo efecto para todas las opciones de todas las pantallas
+var busy=false,FX=267;                         // duración del efecto en ms: 8 cuadros del video a 30 fps (velocidad real)
+function choose(){
+  if(busy||document.getElementById("intro"))return;if(els===gameEls){gameChoose();return;}if(els===audioEls){audioChoose();return;}if(els===videoEls&&videoChoose())return;busy=true;cfxPlay();
+  var list=els,idx=cur,s=stg;
+  list.forEach(function(e,j){e.classList.toggle("up",j<idx);e.classList.toggle("dn",j>idx);});
+  var fx=(list===optEls&&idx===optEls.length-1)?FX:FX;s.style.setProperty("--fx",fx+"ms");s.classList.add("go");
+  setTimeout(function(){
+    s.classList.remove("go");
+    list.forEach(function(e){e.classList.remove("up","dn");});
+    if(list===mainEls&&idx===4)openQuit();                          // "Salir del juego": pregunta antes de cerrar
+    else if(list===quitEls&&idx===0)doQuit();                       // "Sí": se cierra
+    else if(list===quitEls&&idx===1)closeQuit();                    // "No": vuelve al menú
+    else if(list===mainEls&&idx===1)openOpts();                       // "Opciones": se desvanece el menú y aparece la pantalla de opciones
+    else if(list===optEls&&idx===1)openAudio();                     // "Audio"
+    else if(list===optEls&&idx===0)openGame();
+    else if(list===optEls&&idx===2)openVideo();                      // "Vídeo"                      // "Juego": abre Opciones de juego
+    else if(list===optEls&&idx===optEls.length-1)closeOpts();    // "Atrás": vuelve al menú principal
+    else{                                                        // las demás todavía no tienen pantalla: la misma pantalla vuelve para probar el efecto
+      s.classList.add("back");
+      setTimeout(function(){s.classList.remove("back");busy=false;},520);
+    }
+  },fx+350);
+}
+function openOpts(){
+  stg.classList.add("opt");                    // oculta el menú principal
+  els=optEls;optsEl.classList.add("show");     // muestra las opciones (aparecen con un fundido rápido)
+  setSel(0);drawOrn();
+  setTimeout(function(){busy=false;},350);
+}
+function closeOpts(){
+  optsEl.classList.remove("show");
+  stg.classList.remove("opt");stg.classList.add("back");
+  els=mainEls;setSel(1);                       // vuelve con "Opciones" marcado
+  setTimeout(function(){stg.classList.remove("back");busy=false;},520);
+}
+// el ornamento se dibuja desde el centro hacia afuera, rápido
+var ornRaf=0;
+function drawOrn(o){
+  o=o||orn;
+  cancelAnimationFrame(ornRaf);
+  var t0=performance.now(),D=520;
+  o.style.setProperty("--r","0%");
+  function f(){var nw=performance.now();if(FL.lim&&nw-FL.rl<1000/FL.lim-1){ornRaf=requestAnimationFrame(f);return;}FL.rl=nw;var k=Math.min(1,(nw-t0)/D),e=1-Math.pow(1-k,3);o.style.setProperty("--r",(e*58).toFixed(2)+"%");if(k<1)ornRaf=requestAnimationFrame(f);}
+  ornRaf=requestAnimationFrame(f);
+}
+// ---- pantalla "Opciones de juego" (por ahora sin el efecto de brillo al elegir) ----
+var gopts=document.getElementById("gopts"),gorn=document.getElementById("gorn"),gmenu=document.getElementById("gmenu"),greset=document.getElementById("greset"),gback=document.getElementById("gback");
+gorn.src=orn.src;
+var GT={title:"Opciones de juego",reset:"Restablecer valores predeterminados",back:"Atrás"};
+var gameOpts=[{n:"Idioma",v:["Español"]},{n:"Vibración de la cámara",v:["Activada","Reducida","Desactivada"]},{n:"Aspecto del HUD",v:["Pequeño","Desactivado","Grande"]},{n:"Mostrar logros",v:["Desactivada","Activada"]}];
+var gameVal=[0,0,0,0],gameEls=[];
+document.getElementById("gtitle").textContent=GT.title;
+gameOpts.forEach(function(o,i){
+  var d=document.createElement("div");d.className="item row";
+  d.innerHTML=arrowL+'<span class="tw"><span class="g"></span><span class="t">'+o.n+'</span></span><span class="val"></span>'+arrowR;
+  d.onmouseenter=function(){if(els===gameEls)sel(i)};
+  gmenu.appendChild(d);gameEls.push(d);
+});
+mkItem(GT.reset,4,gameEls,greset);
+mkItem(GT.back,5,gameEls,gback);
+[gmenu,greset,gback].forEach(bindNav);
+function showGame(){gameOpts.forEach(function(o,i){gameEls[i].querySelector(".val").textContent=o.v[gameVal[i]];});}
+showGame();
+function gameChange(i,dir){if(i>3)return;var n=gameOpts[i].v.length;gameVal[i]=(gameVal[i]+dir+n)%n;showGame();sfxPlay();}
+function gameChoose(){
+  if(cur>3)cfxPlay();
+  if(cur<4)gameChange(cur,1);
+  else if(cur===4)resetEffect();      // restablecer valores predeterminados
+  else closeGame();                                   // Atrás
+}
+// "Restablecer valores predeterminados": mismo efecto de brillo que las opciones comunes, pero mucho más alargado
+function resetEffect(fn){
+  busy=true;
+  if(fn)fn();else{gameVal=[0,0,0,0];showGame();}                       // todo vuelve a su valor predeterminado
+  stg.style.setProperty("--fx",FX+"ms");stg.classList.add("rst","wide");   // solo el brillo, sin cambiar de pantalla
+  setTimeout(function(){stg.classList.remove("rst","wide");busy=false;},FX+50);
+}
+function openGame(){
+  optsEl.classList.remove("show");gopts.classList.add("show");
+  els=gameEls;fitRows(gmenu,gameOpts,gameEls);setSel(0);drawOrn(gorn);
+  setTimeout(function(){busy=false;},350);
+}
+// ---- pantalla "Audio": global baja todo; sonido = flechitas y elegir; música = solo la música ----
+var volG=10,volS=10,volM=10,mgain=null,lastStep=0;
+function vS(){return volG/10*volS/10;}
+function vM(){return volG/10*volM/10;}
+function volGet(i){return [volG,volS,volM][i];}
+function applyMusicVol(){if(!actx||!mgain)return;var t=actx.currentTime;try{mgain.gain.cancelScheduledValues(t);mgain.gain.setTargetAtTime(.9*vM(),t,.04);}catch(e){}}
+var aopts=document.getElementById("aopts"),aorn=document.getElementById("aorn"),amenu=document.getElementById("amenu"),areset=document.getElementById("areset"),aback=document.getElementById("aback");
+aorn.src=orn.src;
+document.getElementById("atitle").textContent="Audio";
+var audioNames=["Volumen global","Volumen de sonido","Volumen de música"],audioEls=[];
+function showAudio(){audioNames.forEach(function(n,i){var d=audioEls[i],v=volGet(i);d.querySelector(".sl").style.setProperty("--v",v);d.querySelector(".num").textContent=v;});}
+function volSet(i,v){
+  v=Math.max(0,Math.min(10,Math.round(v)));var old=volGet(i);
+  if(v===old)return;
+  if(i===0)volG=v;else if(i===1)volS=v;else volM=v;
+  showAudio();applyMusicVol();sfxPlay(true);
+}
+audioNames.forEach(function(n,i){
+  var d=document.createElement("div");d.className="item row";
+  d.innerHTML=arrowL+'<span class="tw"><span class="g"></span><span class="t">'+n+'</span></span><span class="sl"><span class="fl"></span><span class="mk"><svg viewBox="0 0 10 10" width="100%" height="100%"><path d="M0 .5L5 9.5L10 .5L5 3.6Z" fill="#fff"/></svg></span></span><span class="val num"></span>'+arrowR;
+  d.onmouseenter=function(){if(els===audioEls)sel(i)};
+  amenu.appendChild(d);audioEls.push(d);
+  var sl=d.querySelector(".sl"),drag=false;
+  function setX(e){var r=sl.getBoundingClientRect();volSet(i,(e.clientX-r.left)/r.width*10);}
+  sl.addEventListener("pointerdown",function(e){e.stopPropagation();if(busy)return;sel(i);drag=true;try{sl.setPointerCapture(e.pointerId);}catch(_){}setX(e);});
+  sl.addEventListener("pointermove",function(e){if(drag)setX(e);});
+  function up(){drag=false;}
+  sl.addEventListener("pointerup",up);sl.addEventListener("pointercancel",up);
+});
+mkItem(GT.reset,3,audioEls,areset);
+mkItem(GT.back,4,audioEls,aback);
+[amenu,areset,aback].forEach(bindNav);
+showAudio();
+function audioChoose(){
+  if(cur<3)return;                                   // los controles deslizantes se mueven con flechas izquierda/derecha o arrastrando
+  cfxPlay();
+  if(cur===3)resetEffect(function(){volG=volS=volM=10;showAudio();applyMusicVol();});
+  else closeAudio();
+}
+function openAudio(){
+  optsEl.classList.remove("show");aopts.classList.add("show");
+  els=audioEls;setSel(0);drawOrn(aorn);
+  setTimeout(function(){busy=false;},350);
+}
+function closeAudio(){
+  fadeSwap(aopts,optsEl,function(){els=optEls;setSel(1);drawOrn(orn);});
+}
+// cambio de pantalla con desvanecimiento lento (para "Atrás")
+function fadeSwap(from,to,after){
+  busy=true;from.classList.add("out");
+  setTimeout(function(){
+    from.classList.remove("show","out");to.classList.add("show");after();
+    setTimeout(function(){busy=false;},350);
+  },FX+350);
+}
+function closeGame(){
+  fadeSwap(gopts,optsEl,function(){els=optEls;setSel(0);drawOrn(orn);});
+}
+// ---- pantalla "Vídeo": en PC y en móvil las opciones son distintas ----
+var vopts=document.getElementById("vopts"),vorn=document.getElementById("vorn"),vmenu=document.getElementById("vmenu"),vreset=document.getElementById("vreset"),vback=document.getElementById("vback");
+vorn.src=orn.src;
+document.getElementById("vtitle").textContent="Vídeo";
+var VSYNC="Evita que la pantalla deje de sincronizar. Déjalo activado para disfrutar de una experiencia óptima.";
+var FPSD="Limitar la velocidad de fotogramas máxima para ofrecer una experiencia uniforme.";
+var FPSV=["Desactivada","30","60","90","120","144"],FULLV=["Desactivada","Activada","Sin bordes"],ONOFF=["Desactivada","Activada"];
+// Resoluciones: de 192 x 120 (mínimo) a 1920 x 1200 (máximo y predeterminada), en 10 pasos
+var RES=[[Math.round(Math.max(screen.width,screen.height)*(window.devicePixelRatio||1)),Math.round(Math.min(screen.width,screen.height)*(window.devicePixelRatio||1))]];   // la resolución se ajusta a la de la pantalla del dispositivo
+var RESV=RES.map(function(r){return r[0]+" x "+r[1];});
+var videoOpts=isMobile?[                       // móvil (captura en español)
+  {n:"Resolución",v:RESV,d:9},
+  {n:"Pantalla completa",v:FULLV,d:0},
+  {n:"Sincronización vertical",v:ONOFF,d:0,t:VSYNC},
+  {n:"Límite de fotogramas",v:FPSV,d:0,t:FPSD},
+  {n:"Escala de pantalla"},{n:"Brillo"},{n:"Ajustes avanzados"}
+]:[                                            // PC (captura en inglés, traducida)
+  {n:"Resolución",v:RESV,d:9},
+  {n:"Pantalla completa",v:FULLV,d:0},
+  {n:"Sincronización vertical",v:ONOFF,d:0,t:VSYNC},
+  {n:"Efectos de partículas",v:["Normal","Reducidos"],d:0},
+  {n:"Calidad del desenfoque",v:["Alta","Media","Baja"],d:0},
+  {n:"Límite de fotogramas",v:FPSV,d:5,t:FPSD},
+  {n:"Escala de pantalla"},{n:"Brillo"}
+];
+var videoEls=[],videoVal=[];
+videoOpts.forEach(function(o,i){
+  var d=document.createElement("div");
+  if(o.v){
+    d.className="item row";
+    d.innerHTML=arrowL+'<span class="tw"><span class="g"></span><span class="t">'+o.n+'</span></span><span class="val"></span>'+(o.t?'<span class="desc">'+o.t+'</span>':'')+(o.ap||o.n==="Pantalla completa"?'<span class="apply">Aplicar</span>':'')+arrowR;
+    videoVal.push(o.d);
+  }else{
+    d.className="item";
+    d.innerHTML=arrowL+'<span class="tw"><span class="g"></span><span class="t">'+o.n+'</span></span>'+arrowR;
+    videoVal.push(0);
+  }
+  d.onmouseenter=function(){if(els===videoEls)sel(i)};
+  vmenu.appendChild(d);videoEls.push(d);
+});
+mkItem(GT.reset,videoOpts.length,videoEls,vreset);
+mkItem(GT.back,videoOpts.length+1,videoEls,vback);
+// ---- Resolución: el escenario completo (fondo, dibujos, textos, partículas) toma exactamente el tamaño elegido; si la ventana es más chica se reduce proporcionalmente para que quepa ----
+videoOpts[0].d=RES.length-1;videoVal[0]=RES.length-1;
+videoOpts[1].d=0;videoVal[1]=0;   // Pantalla completa: predeterminado "Desactivada"
+var STAGESC=1,resApplied=RES.length-1,resBtn=null,fullApplied=0,PEX=0,applyBtns=vmenu.querySelectorAll(".apply");
+// Baja de calidad: todo el escenario se muestrea a W x H píxeles reales y se vuelve a estirar a pantalla completa (como en el port de Silksong)
+var LRN=0;
+// Baja de calidad real: 1) se promedia cada bloque (el brillo no cambia)  2) un mapa de desplazamiento copia ese color a todo el bloque, sin suavizar (píxeles nítidos)
+var lrw=document.getElementById("lrw");
+function layoutStage(){
+  document.documentElement.classList.toggle("ext",fullApplied===2);   // antes de medir: así el alto incluye la franja de arriba
+  var r=RES[resApplied],bw=document.body.clientWidth||innerWidth,bh=document.body.clientHeight||innerHeight;
+  var SW=Math.max(1,Math.floor(Math.min(bw,bh*16/9))),SH=Math.round(SW*9/16);   // la pantalla ocupa la ventana completa en 16:9; la resolución solo cambia la calidad
+  var t=1,LW=SW,LH=SH;
+  stg.style.width=LW+"px";stg.style.height=LH+"px";
+  // Pantalla completa: 0 Desactivada (16:9 con el navegador alrededor), 1 Activada (16:9 con barras negras), 2 Sin bordes (se estira hasta el límite de la pantalla)
+  var ext=fullApplied===2,ex=ext?Math.max(0,(bw-SW)/2):0,ey=ext?Math.max(0,(bh-SH)/2):0;   // Sin bordes: el menú sigue en 16:9 y el fondo y las partículas continúan por donde irían las barras
+  lrw.style.width=SW+"px";lrw.style.height=SH+"px";
+  var exL=ex/t,eyL=ey/t;
+  stg.style.setProperty("--ex",exL+"px");stg.style.setProperty("--ey",eyL+"px");stg.classList.toggle("ext",ext);
+  document.body.classList.toggle("ext",ext);document.documentElement.classList.toggle("ext",ext);
+  var wex=Math.max(0,(bw-SW)/2),wE=Math.max(0,(bh-SH)/2);          // el mundo de partículas llega hasta el borde de la pantalla en cualquier modo
+  PEX=wex/SW*100;stg.style.setProperty("--E",wE+"px");if(window.types)worldParticles(PEX,wE,SH);
+  document.body.classList.toggle("bars",fullApplied===1);document.documentElement.classList.toggle("bars",fullApplied===1);
+  var tc=document.querySelector('meta[name="theme-color"]');if(tc)tc.setAttribute("content","#000000");   // barra de estado / navegador en negro
+  fitSave();
+  if(vopts.classList.contains("show")){fitVideo();placeVideo();}
+  if(gopts.classList.contains("show"))fitRows(gmenu,gameOpts,gameEls);
+}
+function resMark(){var dirty=videoVal[0]!==resApplied||videoVal[1]!==fullApplied;for(var i=0;i<applyBtns.length;i++)applyBtns[i].classList.toggle("ready",dirty);}
+// Pantalla completa: 0 Desactivada, 1 Activada (pantalla completa real del navegador), 2 Sin bordes
+function setFull(m){
+  try{
+    var de=document.documentElement,on=!!(document.fullscreenElement||document.webkitFullscreenElement),p;
+    if(m>=1&&!on){var rq=de.requestFullscreen||de.webkitRequestFullscreen;if(rq){try{p=rq.call(de,{navigationUI:"hide"});}catch(e1){p=rq.call(de);}if(p&&p.catch)p.catch(function(){});}}
+    else if(m===0&&on){var ex=document.exitFullscreen||document.webkitExitFullscreen;if(ex){p=ex.call(document);if(p&&p.catch)p.catch(function(){});}}
+  }catch(e){}
+}
+document.addEventListener("fullscreenchange",function(){if(!document.fullscreenElement&&fullApplied>0){fullApplied=0;videoVal[1]=0;showVideo();layoutStage();}});   // si sales con Esc, vuelve a Desactivada
+// Al entrar o salir de pantalla completa se vuelve a declarar el color negro de la barra superior (algunos navegadores lo leen de nuevo en ese momento)
+function blackBar(){
+  Array.prototype.forEach.call(document.querySelectorAll('meta[name="theme-color"]'),function(m){m.remove();});
+  ["","(prefers-color-scheme: dark)","(prefers-color-scheme: light)"].forEach(function(md){var m=document.createElement("meta");m.name="theme-color";m.content="#000000";if(md)m.media=md;document.head.appendChild(m);});
+  document.documentElement.style.background="#000";
+}
+["fullscreenchange","webkitfullscreenchange"].forEach(function(ev){document.addEventListener(ev,function(){blackBar();setTimeout(blackBar,300);});});
+blackBar();
+// Un solo botón Aplicar por fila (Resolución y Pantalla completa): aplica los dos ajustes pendientes
+Array.prototype.forEach.call(applyBtns,function(b){
+  var idx=videoEls.indexOf(b.parentNode);
+  b.addEventListener("pointerdown",function(e){e.stopPropagation();});
+  b.addEventListener("click",function(e){e.stopPropagation();if(busy)return;sel(idx);applyRes();});
+});
+function applyRes(q){
+  var ch=false;
+  if(videoVal[0]!==resApplied){resApplied=videoVal[0];ch=true;}
+  if(videoVal[1]!==fullApplied){fullApplied=videoVal[1];setFull(fullApplied);ch=true;}
+  if(ch)layoutStage();resMark();if(ch&&!q)cfxPlay();
+}
+if(resBtn){
+  resBtn.addEventListener("pointerdown",function(e){e.stopPropagation();});     // que no active el cambio de valor de la fila
+  resBtn.addEventListener("click",function(e){e.stopPropagation();if(busy)return;sel(0);applyRes();});
+}
+addEventListener("resize",layoutStage);layoutStage();
+// "Restablecer" y "Atrás" van debajo de la última opción, con el mismo espacio arriba y abajo de "Restablecer" (se mide la altura real de la lista)
+// Las columnas de Vídeo tienen posición fija (38.1cqw entre el borde izquierdo de los nombres y el derecho de los estados, como en la captura).
+// Si el nombre más largo + su estado más largo no caben ahí, se ensancha el bloque (el texto mide lo mismo que en todo el juego).
+function fitVideo(){
+  if(!stg.offsetWidth)return;
+  var k=100/stg.offsetWidth,need=0;
+  videoOpts.forEach(function(o,i){
+    if(!o.v)return;
+    var e=videoEls[i],vw=0;
+    var tmp=document.createElement("span");tmp.className="val";tmp.style.cssText="position:absolute;visibility:hidden;white-space:nowrap;min-width:0;margin:0";e.appendChild(tmp);
+    o.v.forEach(function(v){tmp.textContent=v;vw=Math.max(vw,tmp.offsetWidth*k);});
+    e.removeChild(tmp);
+    need=Math.max(need,e.querySelector(".t").offsetWidth*k+vw+2.2);
+  });
+  vopts.style.setProperty("--rw",(Math.max(38.1,need)+7.4).toFixed(2)+"cqw");
+}
+function placeVideo(){
+  if(!stg.offsetHeight)return;
+  var k=100/stg.offsetHeight,bottom=(vmenu.offsetTop+vmenu.offsetHeight)*k,h=vreset.offsetHeight*k||3.4;
+  var g=Math.max(3.8,Math.min(5.5,(94-bottom-2*h)/2));
+  var top=bottom+g;
+  vreset.style.top=top.toFixed(1)+"cqh";vback.style.top=(top+h+g).toFixed(1)+"cqh";
+}
+[vmenu,vreset,vback].forEach(bindNav);
+// mide el nombre más largo y el estado más largo, y deja las columnas justas (nombre y estado cerca)
+function fitRows(menu,opts,rows){
+  var k=100/stg.offsetWidth,mw=0,gv=0;
+  if(!stg.offsetWidth)return;
+  opts.forEach(function(o,i){
+    if(!o.v)return;
+    var e=rows[i],vw=0;mw=Math.max(mw,e.querySelector(".t").offsetWidth*k);
+    var tmp=document.createElement("span");tmp.className="val";tmp.style.cssText="position:absolute;visibility:hidden;white-space:nowrap;min-width:0;margin:0";e.appendChild(tmp);
+    o.v.forEach(function(v){tmp.textContent=v;vw=Math.max(vw,tmp.offsetWidth*k);});
+    e.removeChild(tmp);
+    gv=Math.max(gv,vw);
+  });
+  menu.style.setProperty("--lw",(mw+.3).toFixed(2)+"cqw");menu.style.setProperty("--vw",(gv+.3).toFixed(2)+"cqw");
+}
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){if(gopts.classList.contains("show"))fitRows(gmenu,gameOpts,gameEls);if(vopts.classList.contains("show")){fitVideo();placeVideo();}});
+function showVideo(){videoOpts.forEach(function(o,i){if(o.v){var vl=videoEls[i].querySelector(".val");vl.textContent=o.v[videoVal[i]];vl.classList.toggle("fixed",o.v.length<2);}});resMark();applyFpsLimit();}
+showVideo();
+function videoChange(i,dir){var o=videoOpts[i];if(!o||!o.v)return;var n=o.v.length;if(n<2)return;videoVal[i]=(videoVal[i]+dir+n)%n;showVideo();sfxPlay();}
+function videoChoose(){                         // devuelve true si ya se resolvió acá; false = las que abren otra pantalla (todavía no existen)
+  var n=videoOpts.length;
+  if(cur<n){if(videoOpts[cur].v){videoChange(cur,1);return true;}return false;}
+  cfxPlay();
+  if(cur===n)resetEffect(function(){videoOpts.forEach(function(o,i){videoVal[i]=o.d||0;});showVideo();applyRes(true);});   // restablecer valores predeterminados
+  else closeVideo();                                                                                          // Atrás
+  return true;
+}
+function openVideo(){
+  optsEl.classList.remove("show");vopts.classList.add("show");
+  els=videoEls;videoVal[0]=resApplied;videoVal[1]=fullApplied;showVideo();fitVideo();placeVideo();setSel(0);drawOrn(vorn);
+  setTimeout(function(){busy=false;},350);
+}
+function closeVideo(){
+  fadeSwap(vopts,optsEl,function(){els=optEls;setSel(2);drawOrn(orn);});
+}
+var st=document.getElementById("stage");
+var types=[[18,.12,.2,.9,0,6,11,.5],[16,.2,.34,.85,0,8,14,.8],[10,.35,.5,.8,0,10,16,1.1],[8,.55,.8,.75,0,12,19,1.7]];
+function spark(t,lx,a,by,strip){
+  var p=document.createElement("div");p.className="p"+(by!==undefined?" x":"");
+  p.dataset.lx=lx;p.dataset.d=a.d;p.dataset.r=a.r;p.style.cssText="width:"+a.s+"cqw;height:"+a.s+"cqw;left:"+lx+"%;"+(by?"bottom:calc(-1% - "+by+"px);":"")+"--r:"+(by?"calc("+a.r+"cqh + "+by+"px)":a.r+"cqh")+";--o:"+(t[3]*(0.8+Math.random()*0.3))+";--dx:"+((Math.random()-.4)*2.4)+"cqw;box-shadow:0 0 "+t[7]+"cqw "+(t[7]/3)+"cqw rgba(70,255,110,.7);animation-delay:"+(-Math.random()*20)+"s;animation-duration:"+a.d+"s"+(strip?";animation-name:flx":"")+";";
+  st.appendChild(p);
+}
+function rnd(t){return {s:t[1]+Math.random()*(t[2]-t[1]),d:t[5]+Math.random()*(t[6]-t[5]),r:25+Math.pow(Math.random(),1.2)*90};}
+// Las partículas viven en un "mundo" tan grande como la pantalla (aunque el escenario sea 16:9): nacen debajo del borde de la pantalla y suben.
+// Desactivada / Activada / Sin bordes solo cambian cuánto se deja ver (el 16:9, el 16:9 con barras negras, o todo), así que cambiar de modo no las mueve.
+var worldKey="";
+function worldParticles(pex,E,SH){
+  var key=Math.round(pex*10)+"|"+Math.round(E);
+  if(key===worldKey)return;worldKey=key;
+  Array.prototype.forEach.call(stg.querySelectorAll(".p.x"),function(p){p.remove();});
+  var eyc=E/(SH/100);
+  if(pex>.5)types.forEach(function(t){           // costados: misma densidad que el resto
+    var side=Math.floor(t[0]/4),n=side*pex/27,k;
+    n=Math.floor(n)+(Math.random()<n%1?1:0);
+    for(k=0;k<n;k++){var a=rnd(t);spark(t,-pex+Math.random()*pex,a,0);spark(t,100+Math.random()*pex,a,0);}
+  });
+  Array.prototype.forEach.call(stg.querySelectorAll(".p"),function(p){   // mismo ritmo de subida aunque el recorrido sea un poco más largo
+    var d=+p.dataset.d,r=+p.dataset.r;if(d&&r)p.style.animationDuration=(d*(r+eyc)/r)+"s";
+  });
+}
+types.forEach(function(t){
+  var side=Math.floor(t[0]/4);
+  for(var k=0;k<side;k++){var a=rnd(t);              // izquierda y derecha comparten tamaño y velocidad
+    spark(t,3+Math.random()*27,a);
+    spark(t,70+Math.random()*27,a);}
+  for(var k=0;k<t[0]-2*side;k++){spark(t,30+Math.random()*40,rnd(t));}
+});
+
+var intro=document.getElementById("intro");
+intro.addEventListener("animationend",function(e){if(e.animationName==="introOut"){intro.remove();intro=null;}});
+
+
+// ---- "Salir del juego": confirmación con el ornamento; "Sí" guarda todo y cierra la página ----
+var qopts=document.getElementById("qopts"),qorn=document.getElementById("qorn"),qmenu=document.getElementById("qmenu"),quitEls=[];
+qorn.src=orn.src;
+document.getElementById("qtitle").textContent="¿Salir del juego?";
+mkItem("Sí",0,quitEls,qmenu);mkItem("No",1,quitEls,qmenu);
+bindNav(qmenu);
+function openQuit(){
+  stg.classList.add("opt");
+  els=quitEls;qopts.classList.add("show");
+  setSel(1);drawOrn(qorn);                                         // empieza marcado "No"
+  setTimeout(function(){busy=false;},350);
+}
+function closeQuit(){
+  qopts.classList.remove("show");
+  stg.classList.remove("opt");stg.classList.add("back");
+  els=mainEls;setSel(4);                                           // vuelve con "Salir del juego" marcado
+  setTimeout(function(){stg.classList.remove("back");busy=false;},520);
+}
+function doQuit(){
+  saveSettings();
+  try{if(actx&&mgain){var t=actx.currentTime;mgain.gain.cancelScheduledValues(t);mgain.gain.setValueAtTime(mgain.gain.value,t);mgain.gain.linearRampToValueAtTime(0,t+.6);}}catch(e){}
+  var b=document.createElement("div");b.id="bye";document.body.appendChild(b);
+  requestAnimationFrame(function(){requestAnimationFrame(function(){b.classList.add("on");});});
+  setTimeout(function(){
+    try{var on=document.fullscreenElement||document.webkitFullscreenElement;if(on)(document.exitFullscreen||document.webkitExitFullscreen).call(document);}catch(e){}
+    try{window.close();}catch(e){}
+    setTimeout(function(){try{location.replace("about:blank");}catch(e){}},250);   // si el navegador no deja cerrar la pestaña, queda la página en blanco
+  },800);
+}
+// ---- se guardan los cambios del jugador (juego, audio, vídeo y pantalla completa) y vuelven al abrir la página ----
+var SKEY="hkbv-settings-v1";
+function saveSettings(){
+  try{
+    var v=videoVal.slice(0,videoOpts.length);v[1]=fullApplied;
+    localStorage.setItem(SKEY,JSON.stringify({g:gameVal,a:[volG,volS,volM],v:v,f:fullApplied}));
+  }catch(e){}
+}
+function loadSettings(){
+  var o=null;
+  try{o=JSON.parse(localStorage.getItem(SKEY)||"null");}catch(e){}
+  if(!o)return;
+  function ok(x,n){return typeof x==="number"&&x>=0&&x<n&&x===Math.floor(x);}
+  if(o.g&&o.g.length===gameVal.length)o.g.forEach(function(x,i){if(ok(x,gameOpts[i].v.length))gameVal[i]=x;});
+  if(o.a&&o.a.length===3){var q=o.a.map(function(x){return typeof x==="number"?Math.max(0,Math.min(10,Math.round(x))):10;});volG=q[0];volS=q[1];volM=q[2];}
+  if(o.v&&o.v.length===videoOpts.length)o.v.forEach(function(x,i){if(videoOpts[i].v&&ok(x,videoOpts[i].v.length))videoVal[i]=x;});
+  var f=ok(o.f,3)?o.f:0;
+  videoVal[0]=resApplied;fullApplied=f;videoVal[1]=f;
+  showGame();showAudio();showVideo();applyMusicVol();layoutStage();
+  if(f>0){                                                         // el navegador solo deja entrar en pantalla completa tras un toque o tecla: se hace con el primero
+    var evs=["pointerup","touchend","click","mouseup","keydown"];   // en pantallas táctiles el navegador solo acepta pantalla completa al levantar el dedo (pointerdown no cuenta)
+    var arm=function(){
+      var on=document.fullscreenElement||document.webkitFullscreenElement;
+      if(fullApplied<=0||on){evs.forEach(function(n){document.removeEventListener(n,arm,true);});return;}
+      setFull(fullApplied);
+    };
+    evs.forEach(function(n){document.addEventListener(n,arm,true);});
+    try{setFull(f);}catch(e){}                                       // por si el navegador ya lo permite sin tocar
+  }
+}
+loadSettings();layoutStage();                              // arma el mundo de partículas ya con las partículas creadas
+setInterval(saveSettings,1000);
+addEventListener("pagehide",saveSettings);
+document.addEventListener("visibilitychange",function(){if(document.hidden)saveSettings();});
+var MUSIC_B64_FILE="./assets/menu-music.mp3";
+// ---- música del menú: empieza a sonar cuando aparece el menú; bucle sin cortes (Web Audio) ----
+var actx=null,mbuf=null,musicWant=false,musicOn=false,resTried=false;
+try{
+  actx=new (window.AudioContext||window.webkitAudioContext)();
+  fetch(MUSIC_B64_FILE).then(function(r){if(!r.ok)throw new Error("No se pudo cargar la música");return r.arrayBuffer();})
+    .then(function(data){return actx.decodeAudioData(data);})
+    .then(function(b){mbuf=b;musicTry();})
+    .catch(function(e){console.warn("No se pudo cargar la música del menú:",e);});
+}catch(e){actx=null;}
+function musicTry(){
+  if(!actx||!musicWant||musicOn||!mbuf)return;
+  if(actx.state!=="running"){if(!resTried){resTried=true;actx.resume().then(musicTry,function(){});}return;}
+  var s=actx.createBufferSource();s.buffer=mbuf;s.loop=true;
+  var g=actx.createGain();g.gain.setValueAtTime(0,actx.currentTime);g.gain.linearRampToValueAtTime(.9*vM(),actx.currentTime+.8);mgain=g;
+  s.connect(g);g.connect(actx.destination);s.start(0);musicOn=true;
+}
+function musicStart(){musicWant=true;musicTry();}
+["pointerdown","touchstart","keydown","click"].forEach(function(ev){document.addEventListener(ev,function(){resTried=false;if(actx&&actx.state==="suspended")actx.resume().then(musicTry,function(){});else musicTry();},{passive:true});});
+document.addEventListener("visibilitychange",function(){if(!actx||!musicOn)return;if(document.hidden)actx.suspend();else actx.resume();});
+(function(){var i=document.getElementById("intro");if(i)i.addEventListener("animationstart",function(e){if(e.animationName==="introOut")musicStart();});setTimeout(musicStart,18000);})();
+// ---- sonido al cambiar de opción (flechitas del menú) ----
+var SFX_B64_FILE="./assets/move-sound.wav";
+var sfxbuf=null,sfxLast=-1e9;
+try{
+  if(actx){fetch(SFX_B64_FILE).then(function(r){if(!r.ok)throw new Error("No se pudo cargar el sonido de navegación");return r.arrayBuffer();})
+    .then(function(data){return actx.decodeAudioData(data);}).then(function(b){sfxbuf=b;})
+    .catch(function(e){console.warn("No se pudo cargar el sonido de navegación:",e);});}
+}catch(e){}
+function sfxShot(){var s=actx.createBufferSource();s.buffer=sfxbuf;var g=actx.createGain();g.gain.value=.25*vS();s.connect(g);g.connect(actx.destination);s.start(0);}
+function sfxPlay(fast){
+  if(!actx||!sfxbuf||document.getElementById("intro"))return;var now=performance.now();if(now-sfxLast<(fast?15:60))return;sfxLast=now;
+  if(actx.state==="running"){sfxShot();return;}
+  var act=navigator.userActivation?navigator.userActivation.isActive:true;
+  if(act)actx.resume().then(function(){if(actx.state==="running")sfxShot();},function(){});
+}
+// ---- sonido al elegir (confirmar) una opción ----
+var CFX_B64_FILE="./assets/confirm-sound.wav";
+var cfxbuf=null;
+try{
+  if(actx){fetch(CFX_B64_FILE).then(function(r){if(!r.ok)throw new Error("No se pudo cargar el sonido de confirmación");return r.arrayBuffer();})
+    .then(function(data){return actx.decodeAudioData(data);}).then(function(b){cfxbuf=b;})
+    .catch(function(e){console.warn("No se pudo cargar el sonido de confirmación:",e);});}
+}catch(e){}
+function cfxShot(){var s=actx.createBufferSource();s.buffer=cfxbuf;var g=actx.createGain();g.gain.value=.25*vS();s.connect(g);g.connect(actx.destination);s.start(0);}
+function cfxPlay(){
+  if(!actx||!cfxbuf)return;
+  if(actx.state==="running"){cfxShot();return;}
+  actx.resume().then(function(){if(actx.state==="running")cfxShot();},function(){});
+}
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./sw.js", { scope: "./" })
+      .catch(function (error) {
+        console.warn("No se pudo registrar el modo sin conexión:", error);
+      });
+  });
+}
+</script>
+</body>
+</html>
